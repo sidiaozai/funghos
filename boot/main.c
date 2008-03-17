@@ -1,5 +1,5 @@
 #include <system.h>
-
+#include <stdio.h>
 
 void *memcpy(unsigned char *dest, const unsigned char *src, int count)
 {
@@ -165,6 +165,7 @@ void _main()
   kbpos=0;
   cmd_on=FALSE;
   login_on=FALSE;
+  mkwin(0,0,0,0,0);
   login(0);
   bufdel();
   kbpos=0;
