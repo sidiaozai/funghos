@@ -1,4 +1,6 @@
-#include "system.h"
+#include <system.h>
+#include "kbmap.h"
+
 
 unsigned int getc_on=0;
 unsigned int gets_on=0;
@@ -8,11 +10,6 @@ unsigned int login_on=0;
 unsigned int login_retry=0;
 unsigned int shift=FALSE;
 
-/* KBDUS means US Keyboard Layout. This is a scancode table
-*  used to layout a standard US keyboard. I have left some
-*  comments in to give you an idea of what key is what, even
-*  though I set it's array index to 0. You can change that to
-*  whatever you want using a macro, if you wish! */
 unsigned char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -93,6 +90,8 @@ unsigned char kbdus2[128] =
     0,	/* F12 Key */
     0,	/* All other keys are undefined */
 };
+
+
 
 /* globalni */
 char kbbuf[BUFFERSIZE];
