@@ -1,7 +1,8 @@
 #include <system.h>
 #include "kbmap.h"
+#include "kb.h"
 
-
+KB_FLAGS kb_flags;
 unsigned int getc_on=0;
 unsigned int gets_on=0;
 unsigned int kbprint_on=0;
@@ -130,18 +131,18 @@ void keyboard_handler(struct regs *r)
      *  set, that means that a key has just been released*/
     if (scancode & 0x80)
     {
-      if (scancode==170||scancode==182) shift=FALSE;
+      if (scancode==170||scancode==182) kb_flags.shift=FALSE;
       /*170 - levy shift, 182 - pravy shift*/
     }
     else
     {
       if (kbdus[scancode]!='\S') {
-        switch (shift) {
+        switch (kb_flags.shift) {
 	case 0:putch(kbdus[scancode]);kbbuf_handler(kbdus[scancode]);break;
 	case 1:putch(kbdus2[scancode]);kbbuf_handler(kbdus2[scancode]);break;
 	}
       } else {
-	shift=TRUE;
+	kb_flags.shift=TRUE;
       }
     }
 
@@ -169,4 +170,5 @@ void keyboard_install()
     /* Instaluje keyboard na  IRQ0 */
     irq_install_handler(1, keyboard_handler);
     bufdel();
+    kb_flags.shift=FALSE;
 }
