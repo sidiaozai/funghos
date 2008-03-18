@@ -166,6 +166,8 @@ void _main()
   cmd_on=FALSE;
   login_on=FALSE;
   mkwin(0,0,0,0,0);
+  char c=getchar();
+  putch(c);
   login(0);
   bufdel();
   kbpos=0;
