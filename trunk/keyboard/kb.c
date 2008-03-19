@@ -2,14 +2,15 @@
 #include "kbmap.h"
 #include "kb.h"
 
+
+
+
 KB_FLAGS kb_flags;
-unsigned int getc_on=0;
-unsigned int gets_on=0;
-unsigned int kbprint_on=0;
-unsigned int cmd_on=0;
-unsigned int login_on=0;
-unsigned int login_retry=0;
-unsigned int shift=FALSE;
+char kbbuf[BUFFERSIZE];
+int kbpos=0;
+
+
+
 
 unsigned char kbdus[128] =
 {
@@ -51,7 +52,10 @@ unsigned char kbdus[128] =
     0,	/* All other keys are undefined */
 };
 
-/* array pro shift */
+
+
+
+/* array to use when shift is pressed */
 unsigned char kbdus2[128] =
 {
     0,  27, '!', '@', '#', '$', '%', '^', '&', '*',
@@ -94,29 +98,11 @@ unsigned char kbdus2[128] =
 
 
 
-/* globalni */
-char kbbuf[BUFFERSIZE];
-int kbpos=0;
-char *p_kbbuf=&kbbuf;
+
 
 /* keyboard buffer, uklada vse co se stiskne */
 void kbbuf_handler(char c) {
-  if (kbpos<BUFFERSIZE&&c!='\n') {
-    if (c=='\b') {
-      kbbuf[kbpos--]=' ';
-    } else {
-    kbbuf[kbpos]=c;
-    kbpos++;
-    }
-  } else {
-    if (c=='\n') {
-      kbbuf[kbpos++]='\0';
-      if (login_on) {
-	login(1);
-      }
-      if (cmd_on) cmdexec();
-    }
-  }
+   
 }
 
 
@@ -125,7 +111,6 @@ void keyboard_handler(struct regs *r)
 {
   unsigned char scancode;
   scancode = inportb(0x60);
-  if (kbprint_on==TRUE) {
 
     /* If the top bit of the byte we read from the keyboard is
      *  set, that means that a key has just been released*/
@@ -145,30 +130,11 @@ void keyboard_handler(struct regs *r)
 	kb_flags.shift=TRUE;
       }
     }
-
-    if (login_on&&kbpos==9) {
-      csr_x--;
-      move_csr();
-      kbprint_on=FALSE;
-    }
-  } else {
-    /* if (kbdus[scancode]=='\b') { */
-/*       csr_x--; */
-/*       putch(' '); */
-/*       csr_x--; */
-/*       move_csr(); */
-/*     } */
-/*     switch (shift) { */
-/*     case 0:kbbuf_handler(kbdus[scancode]);break; */
-/*     case 1:kbbuf_handler(kbdus[scancode]);break; */
-/*     } */
-  }
 }
 
 void keyboard_install()
 {
     /* Instaluje keyboard na  IRQ0 */
     irq_install_handler(1, keyboard_handler);
-    bufdel();
     kb_flags.shift=FALSE;
 }

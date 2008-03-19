@@ -6,7 +6,7 @@ char *gets(char *string)
   char c;
   while (1) {
     c = getchar();
-    
+    c = getchar(); // strange, but it solves the bug (?!)
     if (c=='\n') {
       string[i++]='\0';
       return string;
