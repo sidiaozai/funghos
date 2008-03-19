@@ -2,17 +2,16 @@
 
 char *gets(char *string)
 {
+  unsigned int i=0;
   char c;
-  register unsigned int i;
-  unsigned int string_len=strlen(string);
-  for (i=0;i<=string_len;i++) {
+  while (1) {
     c = getchar();
     
     if (c=='\n') {
-      string[i]='\0';
+      string[i++]='\0';
       return string;
     } else {
-    string[i]=c;
+    string[i++]=c;
     }
   }
 }
