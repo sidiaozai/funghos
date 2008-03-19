@@ -75,14 +75,7 @@ void _main()
   timer_install();
   i_video();
   __asm__ __volatile__ ("sti");
-  mkwin(0,0,0,0,0);
-  char string[15];
-  gets(string);
-  puts(string);
   login(0);
-  bufdel();
-  kbpos=0;
-  //cmd_install();
   for (;;)
     ;
 }
