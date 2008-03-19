@@ -1,21 +1,25 @@
 #include <system.h>
+#include <stdio.h>
+#include "cmd.h"
 
-/* maze buffer, pripravi na novy prikaz */
-void bufdel() {
-  int i;
-  for (i=0;i<BUFFERSIZE;++i) {kbbuf[i]='\e';}
-  kbpos=0;
+void cmd(); /* loop waiting for commands */
+void help(); /* help message */
+void cmdexec(char *string); /* execute commands */
+void cmd_install(); /* 'install' the cmd-line */
+
+
+void cmd() {
+  char cmd_buf[CMD_BUFLEN];
+  while (strcmp(cmd_buf,CMD_EXIT)!=0) {
+    gets(cmd_buf);
+    cmdexec(cmd_buf);
+    strcpy(cmd_buf,"");
+  }
 }
 
-void debug() {
-  char x;
-  x=getchar();
-  putch('\n');
-  putch(x);
-}
 
-void help(int x) {
-  bufdel();
+
+void help() {
   puts("Avaible commands are:\n");
   puts("help -- displays this message\n");
   puts("mkwin -- creates a new window\n");
@@ -23,36 +27,16 @@ void help(int x) {
 }
 
 /* volana kdyz je stisknut Enter, mela by vykonavat prikazy */
-void cmdexec() {
-  if (strcmp(kbbuf,"mkwin")==0) {
-    mkwin(0,0,0,0,30);
-  } else {
-    if (strcmp(kbbuf,"reset")==0) {
-      i_video();
-      mkwin(0,0,0,0,24);
-    } else {
-      if (strcmp(kbbuf,"stopwatch")==0) {
-	bufdel();
-        stopwatch_on=TRUE;
-      } else {
-	if (strcmp(kbbuf,"debug")==0) {
-	  bufdel();
-	  Shutdown();
-	} else {
-	  if (strcmp(kbbuf,"help")==0) help(0);
-      puts("For help, type help :) \n");
-	}
-      }
-    }
-  }
-  bufdel();
+void cmdexec(char *cmd_buf) {
+  if (strcmp(cmd_buf,"help")==0) {help();return;}
+  if (strcmp(cmd_buf,"stopwatch")==0) {stopwatch();return;}
+  if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0,0);return;}
+  puts("Command not found.\n");
 }
 
 
 void cmd_install() {
-  kbprint_on=TRUE;
-  cmd_on=TRUE;
-  bufdel();
   mkwin(0,0,0,0,2);
-  puts("Welcome to HoubOS v0.03.1. \n");
+  puts("Welcome to ");puts(VERSION);putch('\n');
+  cmd();
 }
