@@ -1,6 +1,8 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#define VERSION "FunghOS v0.03OpenSource" /* version name */
+
 /* global */
 #define OK 0
 #define ERROR 1 /* 'vraceci' hodnota pri 'nezname' chybe */
@@ -104,22 +106,10 @@ extern void move_csr(void);
 
 extern void scroll(void);
 
-extern void putch(unsigned char c);
-
-extern void puts(unsigned char *text);
-
-extern void puti(int x);
-
-extern void txtclr(unsigned char forecolor, unsigned char backcolor);
-
 extern void i_video(void);
 
 extern void i_hello(void);
 
-/* these are for text colors */
-typedef enum {
-  BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, BROWN, LIGHT_GREY, DARK_GREY, LIGHT_BLUE, LIGHT_GREEN, LIGHT_CYAN, LIGHT_RED, LIGHT_MAGENTA, LIGHT_BROWN, WHITE
-} COLORS;
 /* scrn.c ** end */
 
 
@@ -166,15 +156,7 @@ extern void cmd_install();
 /* timer.c */
 extern void timer_install();
 
-extern int timer_ticks;
-
-extern int timer_sec;
-
-extern int timer_min;
-
-extern int timer_hrs;
-
-extern int stopwatch_on;
+extern void stopwatch();
 /* timer.c ** end */
 
 
