@@ -9,7 +9,7 @@ void bufdel() {
 
 void debug() {
   char x;
-  x=getc();
+  x=getchar();
   putch('\n');
   putch(x);
 }
