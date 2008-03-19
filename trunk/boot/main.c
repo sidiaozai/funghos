@@ -1,6 +1,7 @@
 #include <system.h>
 #include <stdio.h>
 
+
 void *memcpy(unsigned char *dest, const unsigned char *src, int count)
 {
     const char *sp = (const char *)src;
@@ -61,93 +62,6 @@ void strcpy(char *s1, char *s2)
 }
 
 
-char getc() {
-  bufdel();
-  getc_on=TRUE;
-  while (kbbuf[kbpos]!='\0')
-    ;
-  getc_on=FALSE;
-  return kbbuf[0];
-}
-
-char *gets() {
-  bufdel();
-  gets_on=TRUE;
-  while (kbbuf[kbpos]!='\0')
-    ;
-  gets_on=FALSE;
-  return kbbuf;
-}
-
-void login(int x)
-{
-  
-  static char username[15];
-  static char password[15];
-  if (x==0) {
-  login_on=TRUE;
-  kbprint_on=TRUE;
-  bufdel();
-  kbpos=0;
-  int i;
-  int loginwin=mkwin(30,9,50,16,1);
-  static int ok=FALSE;
-  txtclr(WHITE,LIGHT_BLUE);
-  puts("      Welcome!     "); /* \n */
-  puts("      Login:       "); /* \n */
-  puts("     ");
-  txtclr(BLACK,WHITE);
-  puts("         ");
-  txtclr(WHITE,LIGHT_BLUE);
-  puts("     "); /* \n */
-  puts("     Password:     "); /* \n */
-  puts("     ");
-  txtclr(BLACK,WHITE);
-  puts("         ");
-  txtclr(WHITE,LIGHT_BLUE);
-  puts("     "); /* \n */
-  puts("                  ");
-  putcha(' ');
-  csr_x=36;
-  csr_y=12;
-  move_csr();
-  txtclr(RED,WHITE);
-  for (;;) {;}
-  }
-
-
-if (x==1) {
-  static int xx=0;
-  if (xx==0) {
-    strcpy(username,kbbuf);
-    bufdel();
-    xx=1;
-    csr_x=36;
-    csr_y=14;
-    move_csr();
-  } else {
-    strcpy(password,kbbuf);
-    bufdel();
-    login(2);
-  }
-}
-
-
- if (x==2) {
-   int userok=strcmp(username,"user");
-   int passok=strcmp(password,"password");
-   if (userok==0&&passok==0) {
-     login_on=FALSE;
-     bufdel();
-     cmd_install();
-   } else {
-     puts("\nBad username\nor password...");
-     login(0);
-   }
- }
-
-} /* konec funkce */
-
 
 void _main()
 {
@@ -161,10 +75,10 @@ void _main()
   timer_install();
   i_video();
   __asm__ __volatile__ ("sti");
-  bufdel();
-  kbpos=0;
-  cmd_on=FALSE;
-  login_on=FALSE;
+  mkwin(0,0,0,0,0);
+  char string[15];
+  gets(string);
+  puts(string);
   login(0);
   bufdel();
   kbpos=0;
