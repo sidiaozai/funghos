@@ -6,4 +6,6 @@
 
 extern char getchar();
 
+extern char *gets(char *string);
+
 #endif
