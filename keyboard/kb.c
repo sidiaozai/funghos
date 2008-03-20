@@ -4,6 +4,10 @@
 
 
 
+void keyboard_handler(struct regs *r);
+void keyboard_install();
+
+
 
 KB_FLAGS kb_flags;
 char kbbuf[BUFFERSIZE];
@@ -100,41 +104,17 @@ unsigned char kbdus2[128] =
 
 
 
-/* keyboard buffer, uklada vse co se stiskne */
-void kbbuf_handler(char c) {
-   
-}
 
-
-/* Handles the keyboard interrupt */
+/* Handles the keyboard interrupt, only inportb's the scancode so another can
+   come */
 void keyboard_handler(struct regs *r)
 {
   unsigned char scancode;
   scancode = inportb(0x60);
-
-    /* If the top bit of the byte we read from the keyboard is
-     *  set, that means that a key has just been released*/
-    if (scancode & 0x80)
-    {
-      if (scancode==170||scancode==182) kb_flags.shift=FALSE;
-      /*170 - levy shift, 182 - pravy shift*/
-    }
-    else
-    {
-      if (kbdus[scancode]!='\S') {
-        switch (kb_flags.shift) {
-	case 0:putch(kbdus[scancode]);kbbuf_handler(kbdus[scancode]);break;
-	case 1:putch(kbdus2[scancode]);kbbuf_handler(kbdus2[scancode]);break;
-	}
-      } else {
-	kb_flags.shift=TRUE;
-      }
-    }
 }
 
 void keyboard_install()
 {
-    /* Instaluje keyboard na  IRQ0 */
     irq_install_handler(1, keyboard_handler);
     kb_flags.shift=FALSE;
 }
