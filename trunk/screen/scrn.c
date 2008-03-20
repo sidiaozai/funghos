@@ -1,33 +1,24 @@
-#include "system.h"
+#include <system.h>
+#include <stdio.h>
+
+
 
 unsigned short *textmemptr;
 int attrib = 0x0F;
 int csr_x = 0, csr_y = 0;
 
 
-void scroll(void)
-{
-    unsigned blank, temp;
 
-    /* A blank is defined as a space... we need to give it
-    *  backcolor too */
-    blank = 0x20 | (attrib << 8);
+void move_csr(void); /* moves the cursor, using csr_x and csr_y */
+void cls(); /* clears the screen */
+void putch(unsigned char c); /* PUTCHaracter */
+void putcha(unsigned char c); /* system use only */
+void puts(unsigned char *text); /* PUTString */
+void puti(int x); /* PUTInteger */
+void txtclr(unsigned char forecolor, unsigned char backcolor); /* colors */
+void i_video(void); /* video init, system, boot */
 
-    /* Row 25 je posledni, musime "soupnout" display */
-    if(csr_y >= 25)
-    {
-        /* Move the current text chunk that makes up the screen
-        *  back in the buffer by a line */
-        temp = csr_y - 25 + 1;
-        memcpy (textmemptr, textmemptr + temp * 80, (25 - temp) * 80 * 2);
 
-        /* Finally, we set the chunk of memory that occupies
-        *  the last line of text to our 'blank' character */
-        memsetw (textmemptr + (25 - temp) * 80, blank, 80);
-        csr_y = 25 - 1;
-	move_csr();
-    }
-}
 
 void move_csr(void)
 {
@@ -64,32 +55,30 @@ void cls()
     move_csr();
 }
 
-/* Put a single character on the screen */
+
+
 void putch(unsigned char c)
 {
     unsigned short *where;
     unsigned att = attrib << 8;
 
-    /* funkce pro reseni 'backmezery' :) */
     if(c == 0x08)
     {
       if ((rtwin(CSRX)+1)<csr_x) {
 	csr_x--;
 	putch(' ');
-	csr_x--; /* reseni logicke chyby : cursor se nejprve vrati, ale psanim mezery se zase posune dopredu, je tedy treba opet skocit dozadu */
-      } else { /* else je nutne, dalsi logicka chyba, pokud by zde else nebylo, smazou se 2 mezery za sebou */
-
+	csr_x--;
+      } else {
       if (((rtwin(CSRX)+1)==csr_x)&&((rtwin(CSRY)+1)!=csr_y)) {
-        /* volano pokud jsme na kraji radku */
 	csr_x=rtwin(CSRX2)-1;
 	--csr_y;
 	putch(' ');
 	csr_x=rtwin(CSRX2)-1;
-	--csr_y; /* stejny trik jako nahore */
+	--csr_y;
       }
       }
     }
-    /* taby, posune se na misto delitelne 8 */
+    /* tab handler */
     else if(c == 0x09)
     {
         csr_x = (csr_x + 8) & ~(8 - 1);
@@ -100,36 +89,31 @@ void putch(unsigned char c)
     {
         csr_x = rtwin(CSRX)+1;
     }
-    /* jednoduche, proste dalsi radek :) */
+    /* next line is pretty simple */
     else if(c == '\n')
     {
         csr_x = rtwin(CSRX)+1;
         csr_y++;
     }
-    /* jde do tuheho, tahle funkce vytiskne charakter !! */
+    /* finally, this prints a character! */
     else if(c >= ' ')
     {
-        /*int temp_x,temp_y;
-        temp_x=wherewin(CSRX);
-        temp_y=wherewin(CSRY);
-	csr_x=temp_x;
-	csr_y=temp_y;*/
 	where = textmemptr + (csr_y * 80 + csr_x);
         *where = c | att;	/* Character AND attributes: color */
         csr_x++;
     }
 
-    /* pokud se kurzor 'dotkne' konce okna, prehodit ho na new line */
+    /* if the cursor is at the end of a window, bring it somewhere else :D */
     if(rtwin(WINEND))
     {
         csr_x = rtwin(CSRX)+1;
         csr_y++;
     }
     
-    /* stejne jako ^^, ale jedna se o dolni okraj a jeste posune celou obrazovku nahoru */
+    /* same as above, but it scrolls the window */
     if (rtwin(WINSCROLL)) {
       scwin(currwin);
-      /* tyto dva prikazy budou v platnosti az kdyz se okno opravdu posune, ne jen smaze...
+      /*
       csr_x = rtwin(CSRX)+1;
       csr_y = rtwin(CSRY2)-1;
       */
@@ -140,19 +124,20 @@ void putch(unsigned char c)
     
 }
 
-/* stejne jako putch, ale pouzivane pri tvorbe oken, malo pada :D */
+
+
+/* 'system' putch(), hasn't got the scrolling 'protection',etc... */
 void putcha(unsigned char c)
 {
     unsigned short *where;
     unsigned att = attrib << 8;
 
-    /* Handle a backspace, by moving the cursor back one space */
+    /* backspace */
     if(c == 0x08)
     {
         if(csr_x != 0) csr_x--;
     }
-    /* Handles a tab by incrementing the cursor's x, but only
-    *  to a point that will make it divisible by 8 */
+    /* tabs */
     else if(c == 0x09)
     {
         csr_x = (csr_x + 8) & ~(8 - 1);
@@ -163,18 +148,13 @@ void putcha(unsigned char c)
     {
         csr_x = 0;
     }
-    /* We handle our newlines the way DOS and the BIOS do: we
-    *  treat it as if a 'CR' was also there, so we bring the
-    *  cursor to the margin and we increment the 'y' value */
+    /* nextlines */
     else if(c == '\n')
     {
         csr_x = 0;
         csr_y++;
     }
-    /* Any character greater than and including a space, is a
-    *  printable character. The equation for finding the index
-    *  in a linear chunk of memory can be represented by:
-    *  Index = [(y * width) + x] */
+    /* characters */
     else if(c >= ' ')
     {
         where = textmemptr + (csr_y * 80 + csr_x);
@@ -182,8 +162,7 @@ void putcha(unsigned char c)
         csr_x++;
     }
 
-    /* If the cursor has reached the edge of the screen's width, we
-    *  insert a new line in there */
+    /* this isn't used often :) */
     if(csr_x >= 80)
     {
         csr_x = 0;
@@ -193,7 +172,8 @@ void putcha(unsigned char c)
     
 }
 
-/* tisknuti stringu pomoci putch */
+
+
 void puts(unsigned char *text)
 {
     int i;
@@ -204,7 +184,9 @@ void puts(unsigned char *text)
     }
 }
 
-/* tisknuti integeru , puti jako PUT Integer*/
+
+
+/* PUTInteger */
 void puti(int x)
 {
   char c[5];
@@ -221,12 +203,13 @@ void puti(int x)
   }
   tmp=x;
   c[i]='0'+tmp;
-  /* nasleduje vlastni tisk */
   i=0;
   for (i=0;i<5;++i) {
     if (c[i]!='x') putch(c[i]);
   }
 }
+
+
 
 /* Sets the forecolor and backcolor that we will use */
 void txtclr(unsigned char forecolor, unsigned char backcolor)
@@ -236,7 +219,9 @@ void txtclr(unsigned char forecolor, unsigned char backcolor)
   attrib = (backcolor << 4) | (forecolor & 0x0F);
 }
 
-/* vymaze display, a nastavi pointer na VGA pamet */
+
+
+/* sets the pointer */
 void i_video(void)
 {
   textmemptr = (unsigned short *)0xB8000;
@@ -244,12 +229,3 @@ void i_video(void)
   cls();
 }
 
-/* pozdrav, atp. :) */
-void i_hello(void)
-{
-  puts("HoubOS loaded!\n");
-  txtclr(2,4);
-  puts("Tohle by melo byt v jine barve...\n");
-  txtclr(LIGHT_BLUE,LIGHT_RED);
-  puts("Jeste jina barva... \n");
-}
