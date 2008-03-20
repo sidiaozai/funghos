@@ -24,7 +24,7 @@ extern void txtclr(unsigned char forecolor, unsigned char backcolor);
 
 extern char getchar();
 
-extern char *gets(char *string);
+extern char *gets(char *string, int max);
 
 
 
