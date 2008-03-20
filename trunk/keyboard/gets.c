@@ -1,10 +1,12 @@
 #include <stdio.h>
 
-char *gets(char *string)
+
+
+char *gets(char *string, int max)
 {
   unsigned int i=0;
   char c;
-  while (1) {
+  for (i=0;(i<max&&c!='\n');) {
     c = getchar();
     c = getchar(); // strange, but it solves the bug (?!)
     if (c=='\n') {
