@@ -1,5 +1,7 @@
-/* win.c - functions for creating, removing, drawing & editing windows */
-#include "system.h"
+#include <system.h>
+#include <stdio.h>
+
+
 
  typedef struct {
     int x;
@@ -9,28 +11,30 @@
     int pid;
   } WIN;
 
-WIN window[WINMAX+1];
 
+
+WIN window[WINMAX+1];
 int currwin = 0;
 
-/* funkce na 'scrollovani' oken */
+
+
+void scwin(int winnum); /* scrolls a window */
+int rtwin(int type); /* system function, returns a lot of values */
+void drwin(int winnum); /* draws a window, system */
+int mkwin(int x, int y, int x2, int y2, int pid); /* creates a new window */
+int rmwin(int winnum, int pid); /* removes a window */
+
+
+
 void scwin(int winnum) {
-  /* je treba:
-     1/ smazat prvni radek okna
-     2/ prepsat ho druhym radkem
-     3/ smazat druhy radek okna......
-     ZATIM JEN MAZE OKNO, "REDIRECT"
-  */
   drwin(winnum);
   txtclr(TXTFOREGROUND,TXTBACKGROUND);
   csr_x = window[winnum].x+1;
   csr_y = window[winnum].y+1;
-  
 }
 
 
 
-/* funkce ktera jenom vraci ruzne blbosti */
 int rtwin(int type) {
   if (type==CSRX) return (window[currwin].x);
 
@@ -44,42 +48,9 @@ int rtwin(int type) {
     if (type==CSRY) return (window[currwin].y);
     if (type==CSRX2) return (window[currwin].x2);
 }
-/* zde je jiz konec funkce ! */
 
 
 
-
-/* funkce pro putch, rika kam hodit znak */
-int wherewin(int type) {
-  //int static nextline=FALSE;
-
-  if (type==CSRX) {
-    if (csr_x<=window[currwin].x) {
-      return (window[currwin].x+1); /* pokud je pred zacatkem okna, hodit ho na*/ 
-    }			       /*prvni misto ZA obrubou */
-    
-    if (csr_x>=window[currwin].x2) {
-      //nextline=TRUE;
-      return (window[currwin].x+1);
-    }
-  }
-
-  // if (type==CSRY&&nextline==TRUE) {
-  //  csr_y++;
-  // }
-
-  if (type==CSRY) {
-    if (csr_y<=window[currwin].y) {
-      return (window[currwin].y+1);
-    }
-    if (csr_y>=window[currwin].y2) {
-      scwin(currwin);
-      return (window[currwin].y2-1);
-    }
-  }
-}
-
-/* funkce na 'kresleni' oken, volana systemem */
 void drwin(int winnum) {
   csr_x = window[winnum].x;
   csr_y = window[winnum].y;
@@ -111,22 +82,16 @@ void drwin(int winnum) {
   while (csr_x<=window[winnum].x2) {
     putcha(' ');
   }
-  /// DEBUG!
   csr_x=window[winnum].x+1;
   csr_y=window[winnum].y+1;
   move_csr();
-#ifdef DEBUG
-puts("TEST");
-#endif /* dolni 'obruba' okna */
+ /* dolni 'obruba' okna */
  txtclr(TXTFOREGROUND,TXTBACKGROUND);
  /* nutne opet nastavit default, aby clovek nepsal v 'oknove' barve */
 }
 
 
-/* mkwin -- create a new window
- * parametry: x,y - souradnice, kde 'zacina' okno.
- *            x2,y2 - souradnice, kde 'konci' okno.
- */
+
 int mkwin(int x, int y, int x2, int y2, int pid) {
   static int lcorn=0; static int uline=0;
   if (x==0||x<0) {x=lcorn; lcorn++;}
@@ -155,13 +120,3 @@ int rmwin(int winnum, int pid) {
   }
 }
 
-int wrwin(int winnum, int pid, int line, char *str[]) {
-  if (pid==window[winnum].pid) {
-    csr_x=window[winnum].x+1;
-    csr_y=window[winnum].y+line;
-    txtclr(TXTFOREGROUND,TXTBACKGROUND);
-    puts(str);
-  } else {
-    return SECURITYERROR;
-  }
-}
