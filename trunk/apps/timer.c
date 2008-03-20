@@ -8,16 +8,19 @@ void timer_install(); /* installs the timer_handler */
 
 
 
-unsigned int ticks=0;
-unsigned int ticks_debug=0;
-
+unsigned int timer_ticks=0;
+unsigned int timer_sec=0;
+unsigned int timer_min=0;
+unsigned int timer_hrs=0;
 
 
 
 void timer_handler(struct regs *r)
 {
-  ticks++;
-  if ((ticks%100)==0) ticks_debug++;
+  timer_ticks++;
+  if ((timer_ticks%18==0)&&(timer_ticks!=0)) {timer_ticks=0;timer_sec++;}
+  if ((timer_sec%60==0)&&(timer_sec!=0)) {timer_sec=0;timer_min++;}
+  if ((timer_min%60==0)&&(timer_min!=0)) {timer_min=0;timer_hrs++;}
 }
 
 
