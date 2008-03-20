@@ -2,11 +2,17 @@
 #include <system.h>
 
 
+
+#define USERLEN 15
+#define PASSLEN 15
+
+
+
 void login(int x)
 {
   
-  static char username[15];
-  static char password[15];
+  static char username[USERLEN];
+  static char password[PASSLEN];
   if (x==0) {
     strcpy(username,"");
     strcpy(password,"");
@@ -33,7 +39,7 @@ void login(int x)
     csr_y=12;
     move_csr();
     txtclr(RED,WHITE);
-    gets(username);
+    gets(username,USERLEN);
     login(1);
   }
 
@@ -42,7 +48,7 @@ if (x==1) {
   csr_x=36;
   csr_y=14;
   move_csr();
-  gets(password);
+  gets(password,PASSLEN);
   login(2);
 }
 
