@@ -13,7 +13,11 @@ char *gets(char *string, int max)
       string[i++]='\0';
       return string;
     } else {
-    string[i++]=c;
+      if (c=='\b') {
+	string[i--]=' ';
+      } else {
+	string[i++]=c;
+      }
     }
   }
 }

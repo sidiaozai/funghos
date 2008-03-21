@@ -173,6 +173,12 @@ extern void menu_install();
 
 /* menu.c ** end */
 
+/* paging */
+
+extern void i_paging();
+
+/* paging ** end */
+
 extern void Shutdown();
 
 #endif
