@@ -26,6 +26,8 @@ void help() {
   puts("Avaible commands are:\n");
   puts("help -- displays this message\n");
   puts("mkwin -- creates a new window\n");
+  puts("paging -- enables paging\n");
+  puts("pgfault -- do a page fault\n");
   puts("stopwatch -- the name says it all\n");
 }
 
