@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#define VERSION "FunghOS v0.03OpenSource" /* version name */
+#define VERSION "FunghOS v0.04 OpenSource" /* version name */
 
 /* global */
 #define OK 0
@@ -116,21 +116,6 @@ extern void i_hello(void);
 
 
 /* win.c */
-#define SYSLINE 2 /* pocet radek zabranych systemem */
-#define WINSIZEX 35  /* default sirka noveho okna */
-#define WINSIZEY 10  /* default vyska noveho okna */
-#define WINMAX 10 /* kolik muze byt zaroven otevreno oken, maximum +1 */
-#define BDFOREGROUND 0  /* barva, kterou se budou psat mezery u okraju win :D */
-#define BDBACKGROUND BLUE /* barva okraju oken */
-#define WINFOREGROUND 0
-#define WINBACKGROUND 7
-#define TXTFOREGROUND 1
-#define TXTBACKGROUND WINBACKGROUND
-#define WINEND 2
-#define WINSCROLL 3
-#define CSRY2 4
-#define CSRX2 5
-/* CSRX a CSRY jsou definovane ve screen jako 0 a 1 !!!!!!! */
 extern int currwin;
 
 extern void scwin(int winnum);
