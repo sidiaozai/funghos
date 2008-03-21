@@ -29,7 +29,7 @@ char getchar()
 	   c='\S';
 	   kb_flags.shift=TRUE;
 	 }
+	 if (c!='\S') return c;
        }
-     if (c!='\S') return c;
   }
 }
