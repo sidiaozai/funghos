@@ -7,6 +7,7 @@
 
 typedef struct {
   unsigned shift :1;
+  unsigned in_use:1;
 } KB_FLAGS;
 
 extern KB_FLAGS kb_flags;
