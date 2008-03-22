@@ -48,6 +48,7 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0,0);return;}
   if (strcmp(cmd_buf,"paging")==0) {i_paging();return;}
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
+  if (strcmp(cmd_buf,"floppy")==0) {i_floppy();return;}
   puts("Command not found.\n");
 }
 
