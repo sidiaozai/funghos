@@ -6,10 +6,11 @@
 
 char getchar()
 {
-  char c;
-  unsigned int scancode;
+  char c='\0';
+  unsigned int scancode=0;
+  kb_flags.in_use=TRUE;
   while (1) {
-     while (!(inportb(0x64) & 0x1))
+    while (!(inportb(0x64) & 0x1))
       ;
      scancode = inportb(0x60);
      
@@ -29,7 +30,7 @@ char getchar()
 	   c='\S';
 	   kb_flags.shift=TRUE;
 	 }
-	 if (c!='\S') return c;
+	 if (c!='\S') {kb_flags.in_use=FALSE;return c;}
        }
   }
 }

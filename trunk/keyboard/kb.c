@@ -109,8 +109,10 @@ unsigned char kbdus2[128] =
    come */
 void keyboard_handler(struct regs *r)
 {
-  unsigned char scancode;
-  scancode = inportb(0x60);
+  if (!(kb_flags.in_use)) {
+    unsigned char scancode;
+    scancode = inportb(0x60);
+  }
 }
 
 void keyboard_install()
