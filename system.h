@@ -164,6 +164,12 @@ extern void i_paging();
 
 /* paging ** end */
 
+/* floppies */
+
+extern void i_floppy();
+
+/* floppies ** end */
+
 extern void Shutdown();
 
 #endif
