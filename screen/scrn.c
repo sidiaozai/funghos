@@ -7,6 +7,7 @@
 unsigned short *textmemptr;
 int attrib = 0x0F;
 int csr_x = 0, csr_y = 0;
+unsigned short screen_no_scroll=0;
 
 
 
@@ -113,7 +114,7 @@ void putch(unsigned char c)
     
     /* same as above, but it scrolls the window */
     if (rtwin(WINSCROLL)) {
-      scwin(currwin);
+      if (!screen_no_scroll) scwin(currwin);
       /*
       csr_x = rtwin(CSRX)+1;
       csr_y = rtwin(CSRY2)-1;
