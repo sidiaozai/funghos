@@ -59,7 +59,6 @@ if (x==1) {
    if (userok==0&&passok==0) {
      cmd_install();
    } else {
-     puts("\nBad username\nor password...");
      login(0);
    }
  }

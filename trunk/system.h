@@ -94,6 +94,8 @@ extern void keyboard_handler(struct regs *r);
 #define CSRX 0
 #define CSRY 1
 
+extern unsigned short screen_no_scroll;
+
 extern unsigned short *textmemptr;
 
 extern int csr_x;

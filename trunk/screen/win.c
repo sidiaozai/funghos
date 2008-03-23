@@ -28,6 +28,10 @@ int rmwin(int winnum, int pid); /* removes a window */
 
 
 void scwin(int winnum) {
+  screen_no_scroll=TRUE;
+  puts("Press any key to continue...");
+  (void) getchar();
+  screen_no_scroll=FALSE;
   drwin(winnum);
   txtclr(TXTFOREGROUND,TXTBACKGROUND);
   csr_x = window[winnum].x+1;
@@ -43,7 +47,7 @@ int rtwin(int type) {
     if (csr_x>=window[currwin].x2) {return TRUE;} else {return FALSE;}
   }
   if (type==WINSCROLL) {
-    if (csr_y>=(window[currwin].y2)) {return TRUE;} else {return FALSE;}
+    if (csr_y>=(window[currwin].y2-1)) {return TRUE;} else {return FALSE;}
   }
     if (type==CSRY2) return (window[currwin].y2);
     if (type==CSRY) return (window[currwin].y);

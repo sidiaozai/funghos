@@ -24,6 +24,7 @@ void cmd() {
 
 void help() {
   puts("Avaible commands are:\n");
+  puts("floppy -- detect floppy drives\n");
   puts("help -- displays this message\n");
   puts("mkwin -- creates a new window\n");
   puts("paging -- enables paging\n");
@@ -55,6 +56,7 @@ void cmdexec(char *cmd_buf) {
 
 
 void cmd_install() {
+  screen_no_scroll=FALSE;
   mkwin(0,0,0,0,2);
   puts("Welcome to ");puts(VERSION);putch('\n');
   cmd();

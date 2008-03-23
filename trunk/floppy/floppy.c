@@ -15,11 +15,11 @@ void i_floppy()
   drive_a = data >> 4;
   drive_b = data & 0xF;
 
-  puts("Floppy drive A :");
+  puts("Floppy drive A : ");
   puts(drive_type[drive_a]);
   putch('\n');
 
-  puts("Floppy drive B :");
+  puts("Floppy drive B : ");
   puts(drive_type[drive_b]);
   putch('\n');
 

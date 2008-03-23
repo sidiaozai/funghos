@@ -75,6 +75,7 @@ void _main()
   timer_install();
   i_video();
   __asm__ __volatile__ ("sti");
+  screen_no_scroll=TRUE;
   login(0);
   for (;;)
     ;
