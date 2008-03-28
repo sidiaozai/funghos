@@ -45,7 +45,7 @@ extern char getchar();
 
 extern char *gets(char *string, int max);
 
-
+extern void *malloc(unsigned int size);
 
 
 #endif

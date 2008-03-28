@@ -93,6 +93,7 @@ void _main()
   keyboard_install();
   timer_install();
   i_video();
+  i_paging();
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
   login(0);

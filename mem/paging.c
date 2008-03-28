@@ -22,12 +22,27 @@
 #include "paging.h"
 
 
+unsigned long *page_dir = (unsigned long *)0x9C000;
+unsigned long *page_table = (unsigned long *) 0x9D000;
+unsigned long *page_table2 = (unsigned long *) 0x9E000;
+unsigned long address = 0;
+
+
+
+void pgfault_handler()
+{
+  puts("Pgfault_handler called!\n");
+  txtclr(RED,LIGHT_GREY);
+  puts("System Halted!\n");
+  for (;;)
+    ;
+}
+
 
 void i_paging() {
-  unsigned long *page_dir = (unsigned long *)0x9C000;
-  unsigned long *page_table = (unsigned long *) 0x9D000;
-  unsigned long address = 0; // holds the physical address of a page
   register unsigned int i;
+
+  idt_set_gate(14, (unsigned)pgfault_handler, 0x08, 0x8E);
 
  // map the first 4MB of memory
   for (i=0; i<1024; i++) {
@@ -44,4 +59,16 @@ void i_paging() {
   };
   write_cr3(page_dir); // put that page directory address into CR3
   write_cr0(read_cr0() | 0x80000000); // set the paging bit in CR0 to 1
+}
+
+
+
+void malloc_test() {
+  register unsigned int i;
+  for (i=0; i<1024; i++) {
+    page_table2[i] = address | 3; // attribute set to: supervisor level, read/write, present(011 in binary)
+    address = address + 4096;
+  }
+  page_dir[1] = page_table2;
+  page_dir[1] = page_dir[1] | 3;
 }
