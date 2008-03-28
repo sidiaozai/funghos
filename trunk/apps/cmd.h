@@ -23,4 +23,6 @@
 #define CMD_BUFLEN 256
 #define CMD_EXIT "exit"
 
+extern void malloc_test();
+
 #endif

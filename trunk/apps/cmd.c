@@ -45,8 +45,8 @@ void help() {
   puts("Avaible commands are:\n");
   puts("floppy -- detect floppy drives\n");
   puts("help -- displays this message\n");
+  puts("malloctest -- test the memory allocator, should hit an infinite loop. If not, please, report it\n");
   puts("mkwin -- creates a new window\n");
-  puts("paging -- enables paging\n");
   puts("pgfault -- do a page fault\n");
   puts("stopwatch -- the name says it all\n");
 }
@@ -55,10 +55,21 @@ void help() {
 
 void do_page_fault()
 {
-  unsigned int *ptr = (u32int*)0xA0000000;
+  unsigned int *ptr = (u32int*)0x400000;
   unsigned int do_page_fault2 = *ptr;
 }
 
+void malloc2()
+{
+  unsigned int *x,*y;
+  while (1)
+  {
+    x=malloc(sizeof(unsigned int));
+    y=malloc(sizeof(unsigned int));
+    free(x);
+    free(y);
+  }
+}
 
 
 /* volana kdyz je stisknut Enter, mela by vykonavat prikazy */
@@ -66,9 +77,9 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"help")==0) {help();return;}
   if (strcmp(cmd_buf,"stopwatch")==0) {stopwatch();return;}
   if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0,0);return;}
-  if (strcmp(cmd_buf,"paging")==0) {i_paging();return;}
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
   if (strcmp(cmd_buf,"floppy")==0) {i_floppy();return;}
+  if (strcmp(cmd_buf,"malloctest")==0) {malloc2();return;}
   puts("Command not found.\n");
 }
 
