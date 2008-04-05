@@ -55,6 +55,8 @@ mboot:
 ; will insert an 'extern _main', followed by 'call _main', right
 ; before the 'jmp $'.
 stublet:
+    push ebx
+    push eax
     extern _main
     call _main
     jmp $
@@ -337,8 +339,9 @@ isr_common_stub:
     mov eax, esp   ; Push us the stack
     push eax
     mov eax, fault_handler
-    call eax       ; A special call, preserves the 'eip' register
+    call eax			; A special call, preserves eip register
     pop eax
+    call eax
     pop gs
     pop fs
     pop es

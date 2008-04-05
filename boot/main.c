@@ -19,6 +19,7 @@
 
 #include <system.h>
 #include <stdio.h>
+#include <boot/multiboot.h>
 
 
 void *memcpy(unsigned char *dest, const unsigned char *src, int count)
@@ -82,10 +83,8 @@ void strcpy(char *s1, char *s2)
 
 
 
-void _main()
+void _main(unsigned int magic, multiboot_info_t *mbd)
 {
-
-
   gdt_install();
   idt_install();
   isrs_install();
@@ -93,9 +92,16 @@ void _main()
   keyboard_install();
   timer_install();
   i_video();
-  i_paging();
+  mkwin(0,0,0,0,0);
+  i_memory(mbd);
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
+/*   mkwin(0,0,0,0,0); */
+/*   txtclr(0xE,0); */
+/*   puts("yellow?\n"); */
+/*   txtclr(TXTFOREGROUND,TXTBACKGROUND); */
+/*   puts("default?\n"); */
+/*   putx(703710); */
   login(0);
   for (;;)
     ;

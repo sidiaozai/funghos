@@ -36,6 +36,7 @@ void putch(unsigned char c); /* PUTCHaracter */
 void putcha(unsigned char c); /* system use only */
 void puts(unsigned char *text); /* PUTString */
 void puti(int x); /* PUTInteger */
+void putx(int x); /* PUTheXadecimal */
 void txtclr(unsigned char forecolor, unsigned char backcolor); /* colors */
 void i_video(void); /* video init, system, boot */
 
@@ -210,12 +211,12 @@ void puts(unsigned char *text)
 /* PUTInteger */
 void puti(int x)
 {
-  char c[5];
+  char c[20];
   int i,tmp;
-  for (i=0;i<5;++i) {
+  for (i=0;i<20;++i) {
     c[i]='x';
   }
-  i=4;
+  i=19;
   while (x>=10) {
     tmp=x%10;
     c[i]='0'+tmp;
@@ -225,6 +226,50 @@ void puti(int x)
   tmp=x;
   c[i]='0'+tmp;
   i=0;
+  for (i=0;i<20;++i) {
+    if (c[i]!='x') putch(c[i]);
+  }
+}
+
+
+
+void putx(int x)
+{
+  char c[20];
+  int i,tmp;
+  for (i=0;i<20;++i) {
+    c[i]='x';
+  }
+  i=19;
+
+  while (x>=16) {
+    tmp=x%16;
+    if (tmp<=9)
+    {
+      c[i]='0'+tmp;
+      x=(x-tmp)/16;
+      --i;
+    } else {
+      /* a in ASCII is 97 */
+      tmp -= 10;
+      c[i]=97+tmp;
+      x=(x-tmp-10)/16;
+      --i;
+    }
+  }
+
+  tmp=x;
+
+  if (tmp<=9)
+  {
+    c[i]='0'+tmp;
+  } else {
+    tmp -= 10;
+    c[i]=97+tmp;
+  }
+
+  i=0;
+
   for (i=0;i<5;++i) {
     if (c[i]!='x') putch(c[i]);
   }

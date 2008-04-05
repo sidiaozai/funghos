@@ -6,6 +6,6 @@
 
 void *free(unsigned int addr)
 {
-  HEADER *header_curr = addr;
+  HEADER *header_curr = addr-sizeof(HEADER);
   header_curr->free = TRUE;
 }

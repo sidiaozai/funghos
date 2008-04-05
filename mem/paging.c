@@ -19,6 +19,7 @@
 
 #include <system.h>
 #include <stdio.h>
+#include <mem/mem.h>
 #include "paging.h"
 
 
@@ -29,10 +30,35 @@ unsigned long address = 0;
 
 
 
-void pgfault_handler()
+void pgfault_handler(struct regs *r)
 {
-  puts("Pgfault_handler called!\n");
-  txtclr(RED,LIGHT_GREY);
+  unsigned int faulting_addr;
+  __asm__ __volatile__ ("mov %%cr2, %0" : "=r" (faulting_addr));
+  
+  int present   = !(r->err_code & 0x1); // Page not present
+  int rw = r->err_code & 0x2;           // Write operation?
+  int us = r->err_code & 0x4;           // Processor was in user-mode?
+  int reserved = r->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
+  int id = r->err_code & 0x10;          // Caused by an instruction fetch?
+
+  txtclr(RED,TXTBACKGROUND);
+  puts("Page Fault!\n");
+  txtclr(GREEN,TXTBACKGROUND);
+  puts("( ");
+  if (present) puts("present ");
+  if (rw) puts("read-only ");
+  if (us) puts("user-mode ");
+  if (reserved) puts("reserved ");
+
+  puts(")\n");
+
+  txtclr(YELLOW,TXTBACKGROUND);
+  puti(faulting_addr);
+  
+  putch('\n');
+  
+  txtclr(TXTFOREGROUND,TXTBACKGROUND);
+
   puts("System Halted!\n");
   for (;;)
     ;
@@ -52,13 +78,24 @@ void i_paging() {
 
   // fill the first entry of the page directory
   page_dir[0] = page_table; // attribute set to: supervisor level, read/write, present(011 in binary)
-  page_dir[0] = page_dir[0] | 3;
+  page_dir[0] = page_dir[0] | 3;  // +1024 means "page table in use"
   for(i=1; i<1024; i++)
   {
-    page_dir[i] = 0 | 2; // attribute set to: supervisor level, read/write, not present(010 in binary)
+    page_dir[i] = 0 | 3; // attribute set to: supervisor level, read/write, not present(010 in binary)
   };
   write_cr3(page_dir); // put that page directory address into CR3
   write_cr0(read_cr0() | 0x80000000); // set the paging bit in CR0 to 1
+
+  for (i=0; i<1024; i++) {
+    page_table2[i] = address | 3; // attribute set to: user level, read/write, present(011 in binary)
+    address = address + 4096;
+  }
+  page_dir[1] = page_table2;
+  page_dir[1] = page_dir[1] | 3;
+
+  HEADER *header_curr = FIRST_HEADER;
+  header_curr->free = 1;
+  header_curr->next = END_OF_MEMORY;
 }
 
 
