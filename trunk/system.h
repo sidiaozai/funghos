@@ -16,6 +16,7 @@
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
 
 
+#include <boot/multiboot.h>
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
@@ -28,6 +29,7 @@
 #define SECURITYERROR 2 /* poruseni pravidel nekterym prog. atp. */
 #define TRUE 1
 #define FALSE 0
+#define NULL 0
 
 typedef unsigned int u32int;
 
@@ -179,11 +181,12 @@ extern void menu_install();
 
 /* menu.c ** end */
 
-/* paging */
+/* paging and memory */
 
 extern void i_paging();
 
-/* paging ** end */
+extern void i_memory(multiboot_info_t *mbd);
+/* paging and memory ** end */
 
 /* floppies */
 

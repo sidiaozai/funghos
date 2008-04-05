@@ -6,10 +6,11 @@
 
 void *malloc(unsigned int size)
 {
-  /* 1/ find a free header
-     2/ mark it as used
-     3/ twidling with pointerz
-     4/ return its address
+  /* 1/ find a free page
+     2/ find a free header
+     3/ mark it as used
+     4/ twidling with pointerz
+     5/ return its address
    */
 
   HEADER *header_curr = FIRST_HEADER;
@@ -25,5 +26,6 @@ void *malloc(unsigned int size)
   header_next = header_curr->next;
   header_next->next = tmp;
   header_next->free = TRUE;
+  palloc(header_curr,header_curr->next);
   return header_curr+1;
 }

@@ -79,9 +79,11 @@ void drwin(int winnum) {
   csr_x = window[winnum].x;
   csr_y = window[winnum].y;
   txtclr(BDFOREGROUND,BDBACKGROUND);
-  while (csr_x<=window[winnum].x2) {
-    putcha(' ');
+  putcha(UPLEFTCORNER);
+  while (csr_x<=(window[winnum].x2-1)) {
+    putcha(UPBORDER);
   } /* horni 'obruba' okna */
+  putcha(UPRIGHTCORNER);
 
   csr_y=window[winnum].y+1;
   csr_x=window[winnum].x;
@@ -89,7 +91,7 @@ void drwin(int winnum) {
   while (tmp==0) {
     if (csr_x==window[winnum].x||csr_x==window[winnum].x2) {
 	  txtclr(BDFOREGROUND,BDBACKGROUND);
-	  putcha(' ');
+	  putcha(SIDEBORDER);
 	} else {
 	  if (csr_x<window[winnum].x2) {
 	  txtclr(WINFOREGROUND,WINBACKGROUND);
@@ -103,9 +105,11 @@ void drwin(int winnum) {
   csr_x=window[winnum].x;
   csr_y=window[winnum].y2; /* mozna zbytecne ?! */
   txtclr(BDFOREGROUND,BDBACKGROUND);
-  while (csr_x<=window[winnum].x2) {
-    putcha(' ');
+  putcha(DOWNLEFTCORNER);
+  while (csr_x<=(window[winnum].x2-1)) {
+    putcha(DOWNBORDER);
   }
+  putcha(DOWNRIGHTCORNER);
   csr_x=window[winnum].x+1;
   csr_y=window[winnum].y+1;
   move_csr();

@@ -20,6 +20,8 @@
 #ifndef PAGING_H
 #define PAGING_H
 
+extern unsigned long *page_dir;
+
 extern write_cr3(unsigned long);
 
 extern write_cr0(unsigned long);
