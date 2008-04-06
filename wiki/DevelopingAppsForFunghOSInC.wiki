@@ -13,6 +13,7 @@ Now, I will show you a simple program for FunghOS, which will read a string from
 
 You should be familiar with this first line of code. The most interesting things about it are the functions prototypes, which you can use if you include stdio.h.
 
+{{{
 extern void putch(unsigned char c);
 
 extern void puts(unsigned char *text);
@@ -30,6 +31,8 @@ extern char *gets(char *string, int max);
 extern int mkwin(int x, int y, int x2, int y2, int pid); /* create a window */
 
 extern int rmwin(int winnum, int pid); /* delete a window */
+
+}}}
 
 These functions should be pretty self-explanatory. The only ones I'm going to explain are the mkwin() and rmwin() functions. The mkwin() function will create a window for your program. If you don't create a window at the begining of your app, it will simply run on the terminal from where it was launched. 
 
