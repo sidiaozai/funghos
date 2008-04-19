@@ -50,6 +50,7 @@ void help() {
   puts("malloctest -- test the memory allocator, should hit an infinite loop. If not, please, report it\n");
   puts("mkwin -- creates a new window\n");
   puts("pgfault -- do a page fault\n");
+  puts("speakeroff -- disable the PC speaker\n");
   puts("speakertest -- test the PC's speaker\n");
   puts("stopwatch -- the name says it all\n");
 }
@@ -58,7 +59,7 @@ void help() {
 
 void do_page_fault()
 {
-  unsigned int *ptr = (u32int*)0x400000;
+  unsigned int *ptr = (u32int*)0xA00000;
   unsigned int do_page_fault2 = *ptr;
 }
 
@@ -88,20 +89,20 @@ void malloc3()
   puts("Starting...");
   putch(186);
   putch('\n');
+  puts("0000000");
   while (1)
   {
     unsigned int *x = malloc(sizeof(unsigned int));
+    csr_x -= 7;
     puti(x);
-    putch('\n');
   }
 }
 
 
 void beep2()
 {
-  register unsigned int i;
-  for (i=0;i<5000;i++)
-    beep(i);
+  puts("Enter \"speakeroff\" when your PC's speaker will annoy you.\n");
+  beep(1000);
 }
 
 
@@ -109,13 +110,14 @@ void beep2()
 void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"help")==0) {help();return;}
   if (strcmp(cmd_buf,"stopwatch")==0) {stopwatch();return;}
-  if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0,0);return;}
+  if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0);return;}
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
   if (strcmp(cmd_buf,"floppy")==0) {i_floppy();return;}
   if (strcmp(cmd_buf,"malloctest")==0) {malloc2();return;}
   if (strcmp(cmd_buf,"mdebug")==0) {malloc3();return;}
   if (strcmp(cmd_buf,"mallocdebug")==0) {malloc_test();return;}
   if (strcmp(cmd_buf,"speakertest")==0) {beep2();return;}
+  if (strcmp(cmd_buf,"speakeroff")==0) {nosound();return;}
   puts("Command not found.\n");
 }
 
@@ -123,7 +125,7 @@ void cmdexec(char *cmd_buf) {
 
 void cmd_install() {
   screen_no_scroll=FALSE;
-  mkwin(0,0,0,0,2);
+  mkwin(0,0,0,0);
   puts("Welcome to ");puts(VERSION);putch('\n');
   cmd();
 }

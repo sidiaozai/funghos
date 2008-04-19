@@ -91,17 +91,10 @@ void _main(unsigned int magic, multiboot_info_t *mbd)
   irq_install();
   keyboard_install();
   timer_install();
-  i_video();
-  mkwin(0,0,0,0,0);
   i_memory(mbd);
+  i_video();
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
-/*   mkwin(0,0,0,0,0); */
-/*   txtclr(0xE,0); */
-/*   puts("yellow?\n"); */
-/*   txtclr(TXTFOREGROUND,TXTBACKGROUND); */
-/*   puts("default?\n"); */
-/*   putx(703710); */
   login(0);
   for (;;)
     ;

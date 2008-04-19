@@ -36,7 +36,7 @@ void login(int x)
     strcpy(username,"");
     strcpy(password,"");
     int i;
-    int loginwin=mkwin(30,9,50,16,1);
+    mkwin(30,9,50,16);
     static int ok=FALSE;
     txtclr(WHITE,BLUE);
     puts("      Welcome!     "); /* \n */

@@ -23,6 +23,7 @@
 
 
 
+extern WIN *first_window;
 unsigned short *textmemptr;
 int attrib = 0x0F;
 int csr_x = 0, csr_y = 0;
@@ -100,6 +101,7 @@ void putch(unsigned char c)
       }
       }
     }
+
     /* tab handler */
     else if(c == 0x09)
     {
@@ -120,29 +122,33 @@ void putch(unsigned char c)
     /* finally, this prints a character! */
     else if(c >= ' ')
     {
-	where = textmemptr + (csr_y * 80 + csr_x);
-        *where = c | att;	/* Character AND attributes: color */
-        csr_x++;
+      where = textmemptr + (csr_y * 80 + csr_x);
+      *where = c | att;	/* Character AND attributes: color */
+      csr_x++;
     }
 
-    /* if the cursor is at the end of a window, bring it somewhere else :D */
-    if(rtwin(WINEND))
-    {
-        csr_x = rtwin(CSRX)+1;
-        csr_y++;
-    }
+    /*    if the cursor is at the end of a window, bring it somewhere else :D */
+/*     if(rtwin(WINEND)) */
+/*     { */
+/*       putcha('1'); */
+/*       csr_x = rtwin(CSRX)+1; */
+/*       putcha('2'); */
+/*       csr_y++; */
+/*       putcha('3'); */
+/*     } */
     
     /* same as above, but it scrolls the window */
     if (rtwin(WINSCROLL)) {
       if (!screen_no_scroll) scwin(currwin);
-      /*
-      csr_x = rtwin(CSRX)+1;
-      csr_y = rtwin(CSRY2)-1;
-      */
+    }
+
+    if (rtwin(WINEND))
+    {
+      csr_y++;
+      csr_x = currwin->x+1;
     }
 
     move_csr();
-  
     
 }
 
@@ -190,6 +196,7 @@ void putcha(unsigned char c)
         csr_x = 0;
         csr_y++;
     }
+
     move_csr();
     
 }
@@ -290,6 +297,8 @@ void txtclr(unsigned char forecolor, unsigned char backcolor)
 /* sets the pointer */
 void i_video(void)
 {
+  first_window = malloc(sizeof(WIN));
+  first_window->next = NULL;
   textmemptr = (unsigned short *)0xB8000;
   txtclr(BLACK,BLACK);
   cls();
