@@ -20,6 +20,14 @@
 #ifndef WIN_H
 #define WIN_H
 
+typedef struct win {
+  int x;
+  int y;
+  int x2;
+  int y2;
+  struct win *next;
+} WIN;
+
 #define SYSLINE 1 /* border (up) */
 #define WINSIZEX 40  /* default <-X-> */
 #define WINSIZEY 15  /* default <-Y-> */

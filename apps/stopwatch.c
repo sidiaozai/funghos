@@ -28,7 +28,7 @@ void stopwatch()
   static int running=0;
   while (1) {
   if (!running) {
-    mkwin(34,10,46,15,0);
+    mkwin(34,10,46,15);
     txtclr(RED,LIGHT_GREY);
     puts("Stopwatch\n");
     txtclr(BLUE,LIGHT_GREY);

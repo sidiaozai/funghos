@@ -17,6 +17,8 @@
 
 
 #include <boot/multiboot.h>
+#include <screen/win.h>
+
 
 #ifndef SYSTEM_H
 #define SYSTEM_H
@@ -139,19 +141,19 @@ extern void i_hello(void);
 
 
 /* win.c */
-extern int currwin;
+extern WIN *currwin;
 
-extern void scwin(int winnum);
+extern void scwin(WIN *window);
 
-extern void drwin(int winnum);
+extern void drwin(WIN *window);
 
-extern int mkwin(int x, int y, int x2, int y2, int pid); /* vytvoreni okna */
+extern int mkwin(int x, int y, int x2, int y2); /* vytvoreni okna */
 
 extern int rmwin(int winnum, int pid); /* smazani okna */
 
-extern int wrwin(int winnum, int pid, int line, char *str[]);
+/* extern int wrwin(int winnum, int pid, int line, char *str[]); */
 
-extern int wherewin(int type);
+/* extern int wherewin(int type); */
 /* win.c ** end*/
 
 /* cmd.c */

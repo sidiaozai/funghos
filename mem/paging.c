@@ -32,38 +32,45 @@ unsigned long address = 0;
 
 void pgfault_handler(struct regs *r)
 {
+  static unsigned int debug=0;
+
   unsigned int faulting_addr;
   __asm__ __volatile__ ("mov %%cr2, %0" : "=r" (faulting_addr));
+
+  if (debug==0) {
+    malloc_test();
+  } else {
+
+    int present   = !(r->err_code & 0x1); // Page not present
+    int rw = r->err_code & 0x2;           // Write operation?
+    int us = r->err_code & 0x4;           // Processor was in user-mode?
+    int reserved = r->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
+    int id = r->err_code & 0x10;          // Caused by an instruction fetch?
+    
+    txtclr(RED,TXTBACKGROUND);
+    puts("\nPage Fault!\n");
+    txtclr(GREEN,TXTBACKGROUND);
+    puts("( ");
+    if (present) puts("present ");
+    if (rw) puts("read-only ");
+    if (us) puts("user-mode ");
+    if (reserved) puts("reserved ");
+    
+    puts(")\n");
+    
+    txtclr(YELLOW,TXTBACKGROUND);
+    puti(faulting_addr);
+    
+    putch('\n');
+    
+    txtclr(TXTFOREGROUND,TXTBACKGROUND);
+    
+    puts("System Halted!\n");
+    for (;;)
+      ;
   
-  int present   = !(r->err_code & 0x1); // Page not present
-  int rw = r->err_code & 0x2;           // Write operation?
-  int us = r->err_code & 0x4;           // Processor was in user-mode?
-  int reserved = r->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
-  int id = r->err_code & 0x10;          // Caused by an instruction fetch?
-
-  txtclr(RED,TXTBACKGROUND);
-  puts("Page Fault!\n");
-  txtclr(GREEN,TXTBACKGROUND);
-  puts("( ");
-  if (present) puts("present ");
-  if (rw) puts("read-only ");
-  if (us) puts("user-mode ");
-  if (reserved) puts("reserved ");
-
-  puts(")\n");
-
-  txtclr(YELLOW,TXTBACKGROUND);
-  puti(faulting_addr);
-  
-  putch('\n');
-  
-  txtclr(TXTFOREGROUND,TXTBACKGROUND);
-
-  puts("System Halted!\n");
-  for (;;)
-    ;
+  }
 }
-
 
 void i_paging() {
   register unsigned int i;
@@ -106,6 +113,6 @@ void malloc_test() {
     page_table2[i] = address | 3; // attribute set to: supervisor level, read/write, present(011 in binary)
     address = address + 4096;
   }
-  page_dir[1] = page_table2;
-  page_dir[1] = page_dir[1] | 3;
+  page_dir[2] = page_table2;
+  page_dir[2] = page_dir[1] | 3;
 }

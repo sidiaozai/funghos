@@ -15,6 +15,10 @@
 /*     You should have received a copy of the GNU General Public License      */
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
 
+#ifndef STDLIB_H
+#define STDLIB_H
+
+
 void *malloc(unsigned int size); // dynamic memory allocator
 
 void *free(unsigned int addr);
@@ -24,3 +28,6 @@ void playsound(unsigned int freq); // play sound using the PC speaker
 void nosound(); // stop playing sound using the PC speaker
 
 void beep(); // make a short and ugly beep with the PC speaker
+
+
+#endif
