@@ -3,7 +3,7 @@
 
 = A simple program =
 
-Developing applications for FunghOS should is very easy. A lot of things are the same as you were used to when creating apps for "normal" OSes. The only things you need to know are functions prototypes, which you can find in the appropriate file in the SVN repository, or you can use this wikipage (SVN is updated more often, though, so it's always better to use SVN).
+Developing applications for FunghOS should be very easy. A lot of things are the same as you were used to when creating apps for "normal" OSes. The only things you need to know are functions prototypes, which you can find in the appropriate file in the SVN repository, or you can use this wikipage (SVN is updated more often, though, so it's always better to use SVN).
 
 Now, I will show you a simple program for FunghOS, which will read a string from the keyboard, then print it using various colors.
 
