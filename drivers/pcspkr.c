@@ -17,49 +17,38 @@
 
 
 
-#ifndef STDIO_H
-#define STDIO_H
+#include <system.h>
+#include <stdlib.h>
 
 
 
-#define TRUE 1
-#define FALSE 0
-
-/* Colors for the video memory */
-#define BLACK   0x0
-#define BLUE    0x1
-#define GREEN   0x2
-#define CYAN    0x3
-#define RED     0x4
-#define MAGENTA 0x5
-#define BROWN   0x6
-#define LIGHT_GREY  0x7
-#define DARK_GREY   0x8
-#define LIGHT_BLUE  0x9
-#define LIGHT_GREEN 0xA
-#define LIGHT_CYAN  0xB
-#define LIGHT_RED   0xC
-#define LIGHT_MAGENTA 0xD
-#define YELLOW     0xE
-#define WHITE      0xF
+void playsound(unsigned int freq)
+{	
+	unsigned int div;
+	unsigned short tmp;
+	
+	div = 1193180 / freq;
+	outportb(0x43, 0xb6);
+	outportb(0x42, (unsigned short int) (div) );
+	outportb(0x42, (unsigned short int) (div >> 8) );
+	
+	tmp = inportb(0x61);
+	if (tmp != (tmp | 3))
+	{
+		outportb(0x61, tmp | 3);
+	}
+}
 
 
-#define TXTFOREGROUND BLUE
-#define TXTBACKGROUND LIGHT_GREY
+
+void nosound() {
+	unsigned short tmp = (inportb(0x61) & 0xFC);
+	outportb(0x61, tmp);
+}
 
 
-extern void putch(unsigned char c);
 
-extern void puts(unsigned char *text);
-
-extern void puti(int x);
-
-extern void putx(int x);
-
-extern void txtclr(unsigned char forecolor, unsigned char backcolor);
-
-extern char getchar();
-
-extern char *gets(char *string);
-
-#endif
+void beep() {
+	 playsound(1000);
+         //set_PIT_2(old_frequency);
+}

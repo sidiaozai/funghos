@@ -26,7 +26,7 @@
 unsigned long *page_dir = (unsigned long *)0x9C000;
 unsigned long *page_table = (unsigned long *) 0x9D000;
 unsigned long *page_table2 = (unsigned long *) 0x9E000;
-unsigned long address = 0;
+unsigned long address = 0x0;
 
 
 
@@ -115,4 +115,5 @@ void malloc_test() {
   }
   page_dir[2] = page_table2;
   page_dir[2] = page_dir[1] | 3;
+  puts("malloc_test() finished.\n");
 }

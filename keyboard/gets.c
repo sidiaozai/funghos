@@ -21,20 +21,21 @@
 
 
 
-char *gets(char *string, int max)
+char *gets(char *string) /* insecure, use fgets instead */
 {
   unsigned int i=0;
   char c='\0';
-  for (i=0;((i<max)&&(c!='\n'));) {
+  while (c!='\n') {
     c = getchar();
     if (c=='\n') {
       string[i++]='\0';
       return string;
     } else {
       if (c=='\b') {
-	string[i--]=' ';
+	    if (i!=0)
+	      string[i--]=' ';
       } else {
-	string[i++]=c;
+	    string[i++]=c;
       }
     }
   }

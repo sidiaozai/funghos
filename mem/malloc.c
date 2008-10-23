@@ -41,7 +41,7 @@ void *malloc(unsigned int size)
   }
   header_curr->free=FALSE;
   unsigned int tmp = header_curr->next;
-  header_curr->next=header_curr+size+1;
+  header_curr->next=header_curr+size; /* header_curr+size+1? */
   HEADER *header_next;
   header_next = header_curr->next;
   header_next->next = tmp;

@@ -35,7 +35,7 @@ void cmd_install(); /* 'install' the cmd-line */
 void cmd() {
   char cmd_buf[CMD_BUFLEN];
   while (strcmp(cmd_buf,CMD_EXIT)!=0) {
-    gets(cmd_buf,CMD_BUFLEN);
+    gets(cmd_buf); /* replace with fgets CMD_BUFLEN */
     cmdexec(cmd_buf);
     strcpy(cmd_buf,"");
   }
@@ -77,8 +77,12 @@ void malloc2()
   {
     x=malloc(sizeof(unsigned int));
     y=malloc(sizeof(unsigned int));
+    *x = 1;
+    *y = 2;
     puts("x => ");puti(x);putch('\n');
     puts("y => ");puti(y);putch('\n');
+    puts("*x=> ");puti(*x);putch('\n');
+    puts("*y=> ");puti(*y);putch('\n');
     free(x);
     free(y);
   }
@@ -114,8 +118,6 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
   if (strcmp(cmd_buf,"floppy")==0) {i_floppy();return;}
   if (strcmp(cmd_buf,"malloctest")==0) {malloc2();return;}
-  if (strcmp(cmd_buf,"mdebug")==0) {malloc3();return;}
-  if (strcmp(cmd_buf,"mallocdebug")==0) {malloc_test();return;}
   if (strcmp(cmd_buf,"speakertest")==0) {beep2();return;}
   if (strcmp(cmd_buf,"speakeroff")==0) {nosound();return;}
   puts("Command not found.\n");

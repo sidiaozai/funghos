@@ -23,7 +23,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#define VERSION "FunghOS v0.04 OpenSource" /* version name */
+#define VERSION "FunghOS v0.04.42 OpenSource" /* version name */
 
 /* global */
 #define OK 0
@@ -169,6 +169,11 @@ extern void timer_install();
 extern void stopwatch();
 /* timer.c ** end */
 
+/* ps2mouse.c */
+extern void ps2m_install();
+
+extern unsigned char ps2m_bytes[3];
+/* ps2mouse.c ** end */
 
 /* menu.c */
 #define MENUNAMELEN 25;
