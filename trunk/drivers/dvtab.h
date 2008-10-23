@@ -15,71 +15,27 @@
 /*     You should have received a copy of the GNU General Public License      */
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
 
+/* general stuff to make calling functions more readable */
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
 
+/* names of services */
 
-#include <stdio.h>
-#include <system.h>
+enum {Init,Read,Write,Getc,Putc,Seek};
+#define DV_SRV 6
 
+typedef struct dvsw {
+	char *dvname;
+	int (*dvproc[DV_SRV])(struct dvsw*,...);
+	int dvnum;
+	int dviirq, dvoirq; /* input IRQ, output IRQ */
+	void (*iinterrupt)(struct regs *r);
+	void (*ointerrupt)(struct regs *r);
+	struct dvsw *next;
+};
 
-
-#define USERLEN 15
-#define PASSLEN 15
-
-
-
-void login(int x)
-{
-  
-  static char username[USERLEN];
-  static char password[PASSLEN];
-  if (x==0) {
-    strcpy(username,"");
-    strcpy(password,"");
-    int i;
-    mkwin(30,9,50,16);
-    static int ok=FALSE;
-    txtclr(WHITE,BLUE);
-    puts("      Welcome!     "); /* \n */
-    puts("      Login:       "); /* \n */
-    puts("     ");
-    txtclr(BLACK,WHITE);
-    puts("         ");
-    txtclr(WHITE,BLUE);
-    puts("     "); /* \n */
-    puts("     Password:     "); /* \n */
-    puts("     ");
-    txtclr(BLACK,WHITE);
-    puts("         ");
-    txtclr(WHITE,BLUE);
-    puts("     "); /* \n */
-    puts("                  ");
-    putcha(' ');
-    csr_x=36;
-    csr_y=12;
-    move_csr();
-    txtclr(RED,WHITE);
-    gets(username); /* replace with fgets USERLEN */
-    login(1);
-  }
-
-
-if (x==1) {
-  csr_x=36;
-  csr_y=14;
-  move_csr();
-  gets(password); /* replace with fgets PASSLEN */
-  login(2);
-}
-
-
- if (x==2) {
-   int userok=strcmp(username,"user");
-   int passok=strcmp(password,"password");
-   if (userok==0&&passok==0) {
-     cmd_install();
-   } else {
-     login(0);
-   }
- }
-
-} /* konec funkce */
+extern struct dvsw *dvtab;

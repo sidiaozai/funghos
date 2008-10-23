@@ -25,18 +25,24 @@
 
 char getchar()
 {
+  unsigned char byte_;
   char c='\0';
   unsigned int scancode=0;
   kb_flags.in_use=TRUE;
   while (1) {
-    while (!(inportb(0x64) & 0x1))
-      ;
-     scancode = inportb(0x60);
+    while (!((byte_ = inportb(0x64)) & 1))
+	  ;
+	
+	if (byte_ & 0x20)
+	{
+	  ps2m_handler();
+	} else {
+      scancode = inportb(0x60);
+    }
      
      if (scancode & 0x80)
        {
-	 if (scancode==170||scancode==182) kb_flags.shift=FALSE;
-	 /*170 - levy shift, 182 - pravy shift*/
+	     if (scancode==170||scancode==182) kb_flags.shift=FALSE; /*170 - left shift, 182 - right shift*/
        }
      else
        {

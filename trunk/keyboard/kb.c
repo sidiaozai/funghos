@@ -18,6 +18,7 @@
 
 
 #include <system.h>
+#include <drivers/dvtab.h>
 #include "kbmap.h"
 #include "kb.h"
 
@@ -134,8 +135,16 @@ void keyboard_handler(struct regs *r)
   }
 }
 
+void keyboard_init(struct dvsw *x)
+{
+  kb_flags.shift=FALSE;
+}
+
 void keyboard_install()
 {
-    irq_install_handler(1, keyboard_handler);
-    kb_flags.shift=FALSE;
+	int (*dvproc[DV_SRV])(struct dvsw*,...);
+	dvproc[Init]=keyboard_init;
+	dvproc[Getc]=getchar;
+    dvtab_add("keyboard",dvproc,1,1,&keyboard_handler,&keyboard_handler,TRUE);
+    /*irq_install_handler(1, keyboard_handler);*/
 }

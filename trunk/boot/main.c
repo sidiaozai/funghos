@@ -89,13 +89,18 @@ void _main(unsigned int magic, multiboot_info_t *mbd)
   idt_install();
   isrs_install();
   irq_install();
-  keyboard_install();
-  timer_install();
+  
   i_memory(mbd);
   i_video();
+
+  timer_install();
+  keyboard_install();
+  ps2m_install();
+
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
-  login(0);
+  //login(0);
+  cmd_install();
   for (;;)
     ;
 }
