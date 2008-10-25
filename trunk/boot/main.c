@@ -99,8 +99,7 @@ void _main(unsigned int magic, multiboot_info_t *mbd)
 
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
-  //login(0);
-  cmd_install();
+  login(0);
   for (;;)
     ;
 }

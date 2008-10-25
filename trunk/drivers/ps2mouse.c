@@ -18,14 +18,22 @@
 #include <stdio.h>
 #include <drivers/dvtab.h>
 
+#define MOUSE_CHAR '+' // character displayed as the mouse pointer
+#define MOUSE_FORC YELLOW // its (foreground) color
+#define MOUSE_BACC BLACK // the background color
+#define MOUSE_STEP 21
+
 void ps2m_handler();
-void ps2m_handle(unsigned char flags, unsigned char x, unsigned char y);
+void ps2m_handle(unsigned char flags, char x, char y);
 void ps2m_init(struct dvsw *x);
+void ps2m_read();
 void ps2m_wait(unsigned char a);
 
 unsigned char ps2m_bytes[3];
+unsigned int ps2mx = 0;
+unsigned int ps2my = 0;
 
-ps2m_install() {
+void ps2m_install() {
   int (*dvproc[DV_SRV])(struct dvsw*,...);
   dvproc[Init]=ps2m_init;
   dvtab_add("ps2mouse",dvproc,12,12,&ps2m_handler,&ps2m_handler,TRUE);
@@ -96,24 +104,62 @@ void ps2m_wait(unsigned char a)
 }
 
 
-void ps2m_handle(unsigned char flags, unsigned char x, unsigned char y)
+void ps2m_handle(unsigned char flags, char x, char y)
 {
+  static int xx = 0,yy = 0;
+  static int mouse_step = MOUSE_STEP; // should be user-configurable on run-time later
+  unsigned short *txtptr;
+  static unsigned short *last_txtptr = 0, last_value = 0;
   if (flags & 0x8)
   {
   if ((flags & 0x80) || (flags & 0x40))
     return; // 0x80 and 0x40 only show x and y overflows, do not care about them
-  if (flags & 0x20)
+  if (!(flags & 0x20))
     y |= 0xFFFFFF00; //delta-y is a negative value
-  if (flags & 0x10)
-    x |= 0xFFFFFF00;
+  if (!(flags & 0x10))
+    x |= 0xFFFFFF00; //delta-x is a negative value
   if (flags & 0x4)
-    puts("[ps2] middle\n"); //middle button is pressed
+    ; //middle button is pressed
   if (flags & 0x2)
-    puts("[ps2] right\n"); //right button is pressed
+    ; //right button is pressed
   if (flags & 0x1)
-    puts("[ps2] left\n"); //left button is pressed
+    ; //left button is pressed
+  xx += x;
+  yy += y;
+  while ((xx > mouse_step) || (xx < -mouse_step))
+  {
+  	if (xx < 0)
+  	{
+  	  ps2mx -= 1;
+  	  xx += mouse_step;
+  	} else {
+	  ps2mx += 1;
+	  xx -= mouse_step;
+	}
+  }
+  while ((yy > mouse_step) || (yy < -mouse_step))
+  {
+  	if (yy < 0)
+  	{
+  	  ps2my += 1;
+  	  yy += mouse_step;
+  	} else {
+	  ps2my -= 1;
+	  yy -= mouse_step;
+	}
+  }
+  if (ps2my > 24) ps2my = 24; //checks for not overflowing the screen
+  if (ps2my < 0) ps2my = 0;
+  if (ps2mx > 79) ps2mx = 79;
+  if (ps2mx < 0) ps2mx = 0;
+  if (last_txtptr)
+    *last_txtptr = last_value;
+  last_txtptr = txtptr = ((unsigned short *)0xB8000) + (ps2my * 80) + ps2mx;
+  last_value = (unsigned short) *txtptr;
+  *txtptr = MOUSE_CHAR | (((MOUSE_BACC << 4) | (MOUSE_FORC & 0x0F)) << 8);
   } else {
   	puts("[ps2] bad flags byte (0x8 is not set)\n");
+  	puts("[ps2] this is a bug. Please report it\n");
   	while (1)
   	 ;
   }
