@@ -50,9 +50,11 @@ void help() {
   puts("malloctest -- test the memory allocator, should hit an infinite loop. If not, please, report it\n");
   puts("mkwin -- creates a new window\n");
   puts("pgfault -- do a page fault\n");
+  puts("ps2mouse -- get the last 3 bytes mouse sent\n");
   puts("speakeroff -- disable the PC speaker\n");
   puts("speakertest -- test the PC's speaker\n");
   puts("stopwatch -- the name says it all\n");
+  puts("loop -- idle (debug)\n");
 }
 
 
@@ -118,8 +120,12 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
   if (strcmp(cmd_buf,"floppy")==0) {i_floppy();return;}
   if (strcmp(cmd_buf,"malloctest")==0) {malloc2();return;}
+  if (strcmp(cmd_buf,"mdebug")==0) {malloc3();return;}
+  if (strcmp(cmd_buf,"mallocdebug")==0) {malloc_test();return;}
   if (strcmp(cmd_buf,"speakertest")==0) {beep2();return;}
   if (strcmp(cmd_buf,"speakeroff")==0) {nosound();return;}
+  if (strcmp(cmd_buf,"malloc_test")==0) {malloc_test();return;}
+  if (strcmp(cmd_buf,"loop")==0) {while(1);}
   puts("Command not found.\n");
 }
 

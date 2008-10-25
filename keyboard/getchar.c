@@ -38,7 +38,6 @@ char getchar()
 	  ps2m_handler();
 	} else {
       scancode = inportb(0x60);
-    }
      
      if (scancode & 0x80)
        {
@@ -57,5 +56,6 @@ char getchar()
 	 }
 	 if (c!='\S') {kb_flags.in_use=FALSE;return c;}
        }
+    }
   }
 }
