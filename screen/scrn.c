@@ -145,7 +145,7 @@ void putch(unsigned char c)
     if (rtwin(WINEND))
     {
       csr_y++;
-      csr_x = currwin->x+1;
+      csr_x = rtwin(CSRX)+1;
     }
 
     move_csr();
@@ -197,7 +197,7 @@ void putcha(unsigned char c)
         csr_y++;
     }
 
-    move_csr();
+    //move_csr(); removed - we don't need this, really
     
 }
 
@@ -297,8 +297,9 @@ void txtclr(unsigned char forecolor, unsigned char backcolor)
 /* sets the pointer */
 void i_video(void)
 {
-  first_window = malloc(sizeof(WIN));
-  first_window->next = NULL;
+  int i;
+  for (i=0;i<WINMAX;i++)
+    window[i].pid = 0;
   textmemptr = (unsigned short *)0xB8000;
   txtclr(BLACK,BLACK);
   cls();
