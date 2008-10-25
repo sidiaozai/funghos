@@ -20,20 +20,22 @@
 #ifndef WIN_H
 #define WIN_H
 
-typedef struct win {
-  int x;
-  int y;
-  int x2;
-  int y2;
-  struct win *next;
-} WIN;
+ typedef struct {
+    int x;
+    int y;
+    int x2;
+    int y2;
+    int pid;
+  } WIN;
 
 #define SYSLINE 1 /* border (up) */
 #define WINSIZEX 40  /* default <-X-> */
 #define WINSIZEY 15  /* default <-Y-> */
 #define WINMAX 10 /* how many windows can be opened - linked list later */
-#define BDFOREGROUND YELLOW
-#define BDBACKGROUND BLUE
+#define BD_FG_NORM YELLOW
+#define BD_BG_NORM BLUE
+#define BD_FG_FOCUS YELLOW
+#define BD_BG_FOCUS RED
 #define WINFOREGROUND 0
 #define WINBACKGROUND 7
 #define WINEND 2
@@ -54,5 +56,6 @@ typedef struct win {
 #define DOWNLEFTCORNER 200
 #define DOWNRIGHTCORNER 188
 
+extern WIN window[WINMAX];
 
 #endif

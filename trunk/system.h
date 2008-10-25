@@ -141,20 +141,21 @@ extern void i_hello(void);
 
 
 /* win.c */
-extern WIN *currwin;
+extern int currwin;
 
-extern void scwin(WIN *window);
+extern void scwin(int winnum);
 
-extern void drwin(WIN *window);
+extern void drwin(int winnum);
 
 extern int mkwin(int x, int y, int x2, int y2); /* vytvoreni okna */
 
 extern int rmwin(int winnum, int pid); /* smazani okna */
 
-/* extern int wrwin(int winnum, int pid, int line, char *str[]); */
+extern int wrwin(int winnum, int pid, int line, char *str[]);
 
-/* extern int wherewin(int type); */
+extern int wherewin(int type);
 /* win.c ** end*/
+
 
 /* cmd.c */
 extern void cmdexec();

@@ -27,6 +27,7 @@
 
 void cmd(); /* loop waiting for commands */
 void help(); /* help message */
+void help_dev(); /* developer's help message */
 void cmdexec(char *string); /* execute commands */
 void cmd_install(); /* 'install' the cmd-line */
 
@@ -54,7 +55,14 @@ void help() {
   puts("speakeroff -- disable the PC speaker\n");
   puts("speakertest -- test the PC's speaker\n");
   puts("stopwatch -- the name says it all\n");
-  puts("loop -- idle (debug)\n");
+  puts("help_dev -- displays list of debug commands\n");
+}
+
+
+void help_dev()
+{
+  puts("This is a list of debug, potentionally insecure/damaging commands. Don't try them unless you know what you're doing.\n");
+  puts("mkwin_ -- create a window at another portion of the screen\n");
 }
 
 
@@ -115,6 +123,7 @@ void beep2()
 /* volana kdyz je stisknut Enter, mela by vykonavat prikazy */
 void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"help")==0) {help();return;}
+  if (strcmp(cmd_buf,"help_dev")==0) {help_dev();return;}
   if (strcmp(cmd_buf,"stopwatch")==0) {stopwatch();return;}
   if (strcmp(cmd_buf,"mkwin")==0) {mkwin(0,0,0,0);return;}
   if (strcmp(cmd_buf,"pgfault")==0) {do_page_fault();return;}
@@ -125,6 +134,7 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"speakertest")==0) {beep2();return;}
   if (strcmp(cmd_buf,"speakeroff")==0) {nosound();return;}
   if (strcmp(cmd_buf,"malloc_test")==0) {malloc_test();return;}
+  if (strcmp(cmd_buf,"mkwin_")==0) {mkwin(60,17,78,23);return;}
   if (strcmp(cmd_buf,"loop")==0) {while(1);}
   puts("Command not found.\n");
 }
@@ -133,7 +143,7 @@ void cmdexec(char *cmd_buf) {
 
 void cmd_install() {
   screen_no_scroll=FALSE;
-  mkwin(0,0,0,0);
+  mkwin(10,5,70,20);
   puts("Welcome to ");puts(VERSION);putch('\n');
   cmd();
 }

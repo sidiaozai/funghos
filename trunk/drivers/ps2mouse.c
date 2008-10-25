@@ -16,6 +16,7 @@
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
 #include <system.h>
 #include <stdio.h>
+#include <screen/win.h>
 #include <drivers/dvtab.h>
 
 #define MOUSE_CHAR '+' // character displayed as the mouse pointer
@@ -28,6 +29,8 @@ void ps2m_handle(unsigned char flags, char x, char y);
 void ps2m_init(struct dvsw *x);
 void ps2m_read();
 void ps2m_wait(unsigned char a);
+
+void swin();
 
 unsigned char ps2m_bytes[3];
 unsigned int ps2mx = 0;
@@ -118,12 +121,7 @@ void ps2m_handle(unsigned char flags, char x, char y)
     y |= 0xFFFFFF00; //delta-y is a negative value
   if (!(flags & 0x10))
     x |= 0xFFFFFF00; //delta-x is a negative value
-  if (flags & 0x4)
-    ; //middle button is pressed
-  if (flags & 0x2)
-    ; //right button is pressed
-  if (flags & 0x1)
-    ; //left button is pressed
+
   xx += x;
   yy += y;
   while ((xx > mouse_step) || (xx < -mouse_step))
@@ -157,10 +155,33 @@ void ps2m_handle(unsigned char flags, char x, char y)
   last_txtptr = txtptr = ((unsigned short *)0xB8000) + (ps2my * 80) + ps2mx;
   last_value = (unsigned short) *txtptr;
   *txtptr = MOUSE_CHAR | (((MOUSE_BACC << 4) | (MOUSE_FORC & 0x0F)) << 8);
+  
+  if (flags & 0x4)
+    ; //middle button is pressed
+  if (flags & 0x2)
+    ; //right button is pressed
+  if (flags & 0x1)
+    swin(); //left button is pressed
+  
   } else {
   	puts("[ps2] bad flags byte (0x8 is not set)\n");
   	puts("[ps2] this is a bug. Please report it\n");
   	while (1)
   	 ;
+  }
+}
+
+
+void swin()
+{
+  unsigned int i;
+  for (i=0;i<WINMAX;i++)
+  {
+  	if ((ps2mx < (window[i].x2 + 1)) && (ps2mx > (window[i].x - 1)) && (ps2my < (window[i].y2 + 1)) && (ps2my > (window[i].y - 1)))
+  	{
+  	  currwin = i;
+  	  drwin(i);
+  	  return;
+	}
   }
 }
