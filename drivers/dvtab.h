@@ -14,6 +14,8 @@
 /*                                                                            */
 /*     You should have received a copy of the GNU General Public License      */
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
+#ifndef DVTAB_H
+#define DVTAB_H
 
 /* general stuff to make calling functions more readable */
 #ifndef TRUE
@@ -39,3 +41,5 @@ typedef struct dvsw {
 };
 
 extern struct dvsw *dvtab;
+
+#endif

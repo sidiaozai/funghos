@@ -164,10 +164,10 @@ void ps2m_handle(unsigned char flags, char x, char y)
     swin(); //left button is pressed
   
   } else {
-  	puts("[ps2] bad flags byte (0x8 is not set)\n");
-  	puts("[ps2] this is a bug. Please report it\n");
-  	while (1)
-  	 ;
+  	//puts("[ps2] bad flags byte (0x8 is not set)\n");
+  	//puts("[ps2] this is a bug. Please report it\n");
+  	//while (1)
+  	// ;
   }
 }
 
