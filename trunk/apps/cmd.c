@@ -63,6 +63,7 @@ void help_dev()
 {
   puts("This is a list of debug, potentionally insecure/damaging commands. Don't try them unless you know what you're doing.\n");
   puts("mkwin_ -- create a window at another portion of the screen\n");
+  puts("irqwaitk -- wait for an irq from the keyboard\n");
 }
 
 
@@ -136,6 +137,7 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"malloc_test")==0) {malloc_test();return;}
   if (strcmp(cmd_buf,"mkwin_")==0) {mkwin(60,17,78,23);return;}
   if (strcmp(cmd_buf,"loop")==0) {while(1);}
+  if (strcmp(cmd_buf,"irqwaitk")==0) {puts("waiting... ");irq_wait(1);puts("done\n");return;}
   puts("Command not found.\n");
 }
 

@@ -46,6 +46,13 @@ void *irq_routines[16] =
     0, 0, 0, 0, 0, 0, 0, 0
 };
 
+/* This array is for the irq_wait function */
+volatile int irq_waiting[16] =
+{
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+};
+
 /* This installs a custom IRQ handler for the given IRQ */
 void irq_install_handler(int irq, void (*handler)(struct regs *r))
 {
@@ -141,3 +148,21 @@ void irq_handler(struct regs *r)
     outportb(0x20, 0x20);
 }
 	
+
+void irq_wait_ret(struct regs *r)
+{
+  irq_waiting[r->int_no - 32] = FALSE;
+  return;
+}
+
+void irq_wait(int irq)
+{
+  void *oldhandler;
+  irq_waiting[irq] = TRUE;
+  oldhandler = irq_routines[irq]; // save the old irq handler
+  irq_install_handler(irq, irq_wait_ret); // set up irq_wait_ret() as the new one
+  while (irq_waiting[irq] == TRUE) // wait for the irq_wait_ret function to clear the entry
+    {;}
+  irq_install_handler(irq, oldhandler); // restore the old handler
+  return;
+}

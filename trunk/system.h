@@ -87,6 +87,8 @@ extern void irq_install_handler(int irq, void (*handler)(struct regs *r));
 extern void irq_uninstall_handler(int irq);
 
 extern void irq_install();
+
+extern void irq_wait(int irq);
 /* irq.c ** end */
 
 /* kb.c */
@@ -168,6 +170,8 @@ extern void cmd_install();
 extern void timer_install();
 
 extern void stopwatch();
+
+extern void sleep(int t);
 /* timer.c ** end */
 
 /* ps2mouse.c */
