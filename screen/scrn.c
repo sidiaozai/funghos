@@ -23,7 +23,6 @@
 
 
 
-extern WIN *first_window;
 unsigned short *textmemptr;
 int attrib = 0x0F;
 int csr_x = 0, csr_y = 0;
@@ -297,9 +296,9 @@ void txtclr(unsigned char forecolor, unsigned char backcolor)
 /* sets the pointer */
 void i_video(void)
 {
-  int i;
+  /*int i;
   for (i=0;i<WINMAX;i++)
-    window[i].pid = 0;
+    window[i].pid = 0;*/
   textmemptr = (unsigned short *)0xB8000;
   txtclr(BLACK,BLACK);
   cls();

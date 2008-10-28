@@ -21,7 +21,7 @@
 
 void *malloc(unsigned int size); // dynamic memory allocator
 
-void *free(unsigned int addr);
+void *free(void *addr);
 
 void playsound(unsigned int freq); // play sound using the PC speaker
 

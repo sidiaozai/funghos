@@ -174,14 +174,16 @@ void ps2m_handle(unsigned char flags, char x, char y)
 
 void swin()
 {
-  unsigned int i;
-  for (i=0;i<WINMAX;i++)
+  struct win *window;
+  window = first_window;
+  while (window)
   {
-  	if ((ps2mx < (window[i].x2 + 1)) && (ps2mx > (window[i].x - 1)) && (ps2my < (window[i].y2 + 1)) && (ps2my > (window[i].y - 1)))
+  	if ((ps2mx < (window->x2 + 1)) && (ps2mx > (window->x - 1)) && (ps2my < (window->y2 + 1)) && (ps2my > (window->y - 1)))
   	{
-  	  currwin = i;
-  	  drwin(i);
+  	  currwin = window;
+  	  drwin(window);
   	  return;
 	}
+	window = window->next;
   }
 }

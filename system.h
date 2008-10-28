@@ -143,19 +143,16 @@ extern void i_hello(void);
 
 
 /* win.c */
-extern int currwin;
+extern struct win *first_window;
+extern struct win *currwin;
 
-extern void scwin(int winnum);
+extern void scwin(struct win *window);
 
-extern void drwin(int winnum);
+extern void drwin(struct win *window);
 
 extern int mkwin(int x, int y, int x2, int y2); /* vytvoreni okna */
 
 extern int rmwin(int winnum, int pid); /* smazani okna */
-
-extern int wrwin(int winnum, int pid, int line, char *str[]);
-
-extern int wherewin(int type);
 /* win.c ** end*/
 
 

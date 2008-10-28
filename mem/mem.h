@@ -42,7 +42,7 @@ typedef struct _header {
 } _HEADER;
 
 typedef struct header {
-  unsigned free:1;      /* if set, that means that this block is free,
+  char free;      /* if set, that means that this block is free,
 			 * so it can be used to allocate new memory.
 			 */
   struct header *next;  /* this is simply a pointer to the next header,

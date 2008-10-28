@@ -19,14 +19,14 @@
 
 #ifndef WIN_H
 #define WIN_H
-
- typedef struct {
-    int x;
-    int y;
-    int x2;
-    int y2;
-    int pid;
-  } WIN;
+  
+typedef struct win {
+  int x;
+  int y;
+  int x2;
+  int y2;
+  struct win *next;
+};
 
 #define SYSLINE 1 /* border (up) */
 #define WINSIZEX 40  /* default <-X-> */
@@ -55,7 +55,5 @@
 #define DOWNBORDER UPBORDER
 #define DOWNLEFTCORNER 200
 #define DOWNRIGHTCORNER 188
-
-extern WIN window[WINMAX];
 
 #endif

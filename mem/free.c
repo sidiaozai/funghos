@@ -23,8 +23,11 @@
 
 
 
-void *free(unsigned int addr)
+void *free(void *addr)
 {
-  HEADER *header_curr = addr-sizeof(HEADER);
+  // TO BE WRITTEN LATER!
+  /*HEADER *header_curr;
+  header_curr = (HEADER *) (addr-sizeof(HEADER));
   header_curr->free = TRUE;
+  return;*/
 }
