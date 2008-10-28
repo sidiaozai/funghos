@@ -32,7 +32,7 @@ unsigned long address = 0x0;
 
 void pgfault_handler(struct regs *r)
 {
-  static unsigned int debug=0;
+  static unsigned int debug=1;
 
   unsigned int faulting_addr;
   __asm__ __volatile__ ("mov %%cr2, %0" : "=r" (faulting_addr));
@@ -59,7 +59,7 @@ void pgfault_handler(struct regs *r)
     puts(")\n");
     
     txtclr(YELLOW,TXTBACKGROUND);
-    puti(faulting_addr);
+    putx(faulting_addr);
     
     putch('\n');
     
@@ -88,7 +88,7 @@ void i_paging() {
   page_dir[0] = page_dir[0] | 3;  // +1024 means "page table in use"
   for(i=1; i<1024; i++)
   {
-    page_dir[i] = 0 | 3; // attribute set to: supervisor level, read/write, not present(010 in binary)
+    page_dir[i] = 0 | 3; // attribute set to: supervisor level, read/write, present(011 in binary)
   };
   write_cr3(page_dir); // put that page directory address into CR3
   write_cr0(read_cr0() | 0x80000000); // set the paging bit in CR0 to 1
@@ -99,6 +99,8 @@ void i_paging() {
   }
   page_dir[1] = page_table2;
   page_dir[1] = page_dir[1] | 3;
+  
+  malloc_test();
 
   HEADER *header_curr = FIRST_HEADER;
   header_curr->free = 1;
@@ -115,5 +117,4 @@ void malloc_test() {
   }
   page_dir[2] = page_table2;
   page_dir[2] = page_dir[1] | 3;
-  puts("malloc_test() finished.\n");
 }

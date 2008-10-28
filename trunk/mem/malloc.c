@@ -34,18 +34,18 @@ void *malloc(unsigned int size)
 
   HEADER *header_curr = FIRST_HEADER;
 
-  while ((!header_curr->free)&&(header_curr->next-header_curr>=size))
+  while ((!header_curr->free) || ((header_curr->next - header_curr) < size))
   {
     palloc(header_curr->next, header_curr->next);
-    header_curr =& header_curr->next;
+    header_curr = header_curr->next;
   }
   header_curr->free=FALSE;
-  unsigned int tmp = header_curr->next;
+  struct header *tmp = header_curr->next;
   header_curr->next=header_curr+size; /* header_curr+size+1? */
   HEADER *header_next;
   header_next = header_curr->next;
   header_next->next = tmp;
   header_next->free = TRUE;
   palloc(header_curr,header_curr->next);
-  return header_curr+1;
+  return (header_curr+sizeof(HEADER));
 }

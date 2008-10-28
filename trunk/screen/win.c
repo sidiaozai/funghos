@@ -23,88 +23,163 @@
 
 
 
-WIN window[WINMAX];
-int currwin = 0;
+struct win *first_window;
+struct win *currwin;
 
 
 
-void scwin(int winnum); /* scrolls a window */
+void scwin(struct win *window); /* scrolls a window */
 int rtwin(int type); /* system function, returns a lot of values */
-void drwin(int winnum); /* draws a window, system */
+void drwin(struct win *window); /* draws a window, system */
 int mkwin(int x, int y, int x2, int y2); /* creates a new window */
 int rmwin(int winnum, int pid); /* removes a window */
 
 
 
-void scwin(int winnum) {
+void scwin(struct win *window) {
   screen_no_scroll=TRUE;
   puts("Press any key to continue...");
   (void) getchar();
   screen_no_scroll=FALSE;
-  drwin(winnum);
+  drwin(window);
   txtclr(TXTFOREGROUND,TXTBACKGROUND);
-  csr_x = window[winnum].x+1;
-  csr_y = window[winnum].y+1;
+  csr_x = (window->x)+1;
+  csr_y = (window->y)+1;
 }
 
 
 
 int rtwin(int type) {
-  if (type==CSRX) return (window[currwin].x);
-
+  if (type==CSRX) {
+        return (currwin->x);
+  }
+  
   if (type==WINEND) { 
-    if (csr_x>=window[currwin].x2) {return TRUE;} else {return FALSE;}
+    if (csr_x >= (currwin->x2)) {
+          return TRUE;
+        } else {
+          return FALSE;
+        }
   }
+  
   if (type==WINSCROLL) {
-    if (csr_y>=(window[currwin].y2-1)) {return TRUE;} else {return FALSE;}
+    if ( (csr_y) >= ((currwin->y2)-1) ) {
+          return TRUE;
+        } else {
+          return FALSE;
+        }
   }
-    if (type==CSRY2) return (window[currwin].y2);
-    if (type==CSRY) return (window[currwin].y);
-    if (type==CSRX2) return (window[currwin].x2);
+  
+  if (type==CSRY2) return (currwin->y2);
+  if (type==CSRY) return (currwin->y);
+  if (type==CSRX2) return (currwin->x2);
 }
 
 
 
-void drwin(int winnum) {
-  unsigned short bg,fg;
-  bg = BD_BG_NORM;
-  fg = BD_FG_NORM;
-  txtclr(fg,bg);
-  csr_x = window[winnum].x;
-  csr_y = window[winnum].y;
+int mkwin(int x, int y, int x2, int y2) {
+  static int init = 0;
+  static unsigned int lcorn = 1;
+  static unsigned int uline = 1;
+
+  if (x==0||x<0)
+    x=lcorn++;
+
+  if (y==0||y<0)
+    y=uline++;
+
+  if (x2==0||x2<x)
+    x2=x+WINSIZEX;
+
+  if (y2==0||y2<y)
+    y2=y+WINSIZEY;
+
+  /* store the windows' data somewhere */
+  if (!init)
+  {
+  	first_window = malloc(sizeof(struct win));
+  	first_window->x = x;
+  	first_window->y = y;
+  	first_window->x2 = x2;
+  	first_window->y2 = y2;
+  	first_window->next = NULL;
+  	
+  	currwin = first_window;
+  	
+  	drwin(first_window);
+  	
+  	init = 1; // init done, from now on use the other part (linked list thingy)
+  } else {
+  	
+    struct win *newin;
+
+    newin = malloc(sizeof(struct win));
+
+    newin->x    = x;
+    newin->y    = y;
+    newin->x2   = x2;
+    newin->y2   = y2;
+    newin->next = NULL;
+
+    /* find the end of the windows' queue */
+
+    struct win *tmp;
+
+    tmp = first_window;
+
+    while (tmp->next != NULL)
+      tmp = tmp->next;
+
+    tmp->next = newin;
+
+    currwin = newin;
+
+    drwin(newin);
+  }
+
+}
+
+
+
+void drwin(struct win *window) {
+  csr_x = window->x;
+  csr_y = window->y;
+  txtclr(BD_FG_NORM,BD_BG_NORM);
   putcha(UPLEFTCORNER);
-  while (csr_x<=(window[winnum].x2-1)) {
+  while (csr_x<=((window->x2)-1)) {
     putcha(UPBORDER);
   } /* horni 'obruba' okna */
   putcha(UPRIGHTCORNER);
 
-  csr_y=window[winnum].y+1;
-  csr_x=window[winnum].x;
+  csr_y=(window->y)+1;
+  csr_x=window->x;
+
   int tmp=0;
+
   while (tmp==0) {
-    if (csr_x==window[winnum].x||csr_x==window[winnum].x2) {
-          txtclr(fg,bg);
-          putcha(SIDEBORDER);
-        } else {
-          if (csr_x<window[winnum].x2) {
-          txtclr(WINFOREGROUND,WINBACKGROUND);
-          putcha(' ');
-          } else {csr_y++;csr_x=window[winnum].x;}
-        }
-        if (csr_y==window[winnum].y2) {tmp=1;}
+    if (csr_x==(window->x)||csr_x==(window->x2)) {
+      txtclr(BD_FG_NORM,BD_BG_NORM);
+      putcha(SIDEBORDER);
+    } else {
+      if (csr_x<(window->x2)) {
+        txtclr(WINFOREGROUND,WINBACKGROUND);
+        putcha(' ');
+      } else {csr_y++;csr_x=(window->x);}
+    }
+    if (csr_y==(window->y2)) {tmp=1;}
   }
   /* okraje + vnitrky oken, nejdulezitejsi cast:D */
 
-  csr_x=window[winnum].x;
-  csr_y=window[winnum].y2; /* mozna zbytecne ?! */
-  txtclr(fg,bg);
+  csr_x=window->x;
+  csr_y=window->y2; /* mozna zbytecne ?! */
+  txtclr(BD_FG_NORM,BD_BG_NORM);
   putcha(DOWNLEFTCORNER);
-  while (csr_x<=(window[winnum].x2-1)) {
+  while (csr_x<=((window->x2)-1)) {
     putcha(DOWNBORDER);
   }
   putcha(DOWNRIGHTCORNER);
-  csr_x=window[winnum].x+1;
-  csr_y=window[winnum].y+1;
+  csr_x=(window->x)+1;
+  csr_y=(window->y)+1;
   move_csr();
  /* dolni 'obruba' okna */
  txtclr(TXTFOREGROUND,TXTBACKGROUND);
@@ -113,30 +188,6 @@ void drwin(int winnum) {
 
 
 
-int mkwin(int x, int y, int x2, int y2) {
-  int pid = 27; //random number
-  static int lcorn=1; static int uline=1;
-  if (x==0||x<0) {x=lcorn; lcorn++;}
-  if (y==0||y<SYSLINE) {y=uline+SYSLINE; uline++; }
-  if (x2==0||x2<x) {x2=x+WINSIZEX; }
-  if (y2==0||y2<y) {y2=y+WINSIZEY; }
-  
-  /* zjisti volne okno, a tam se umisti */
-  int i,end=0;
-  for (i=0;window[i].pid;i++) ;
-  window[i].x=x; window[i].y=y; window[i].x2=x2; window[i].y2=y2; window[i].pid=pid;
-  currwin=i;
-  drwin(i);
-  return i;
+int rmwin(int winnum, int pid)
+{
 }
-
-int rmwin(int winnum, int pid) {
-  if (pid==window[winnum].pid) {
-    window[winnum].pid=0; window[winnum].x=0; window[winnum].y=0;
-    window[winnum].x2=0; window[winnum].y2=0;
-    return OK;
-  } else {
-    return SECURITYERROR;
-  }
-}
-
