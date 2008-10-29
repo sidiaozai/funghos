@@ -20,7 +20,6 @@
 #include <system.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <mem/mem.h>
 #include "cmd.h"
 
 
@@ -77,20 +76,20 @@ void do_page_fault()
 
 void malloc2()
 {
-  puti(sizeof(HEADER));putch('\n');  /*4*/
-  puti(sizeof(_HEADER));putch('\n'); /*8*/
-  unsigned int *x,*y;
+  int *x;
+  int *y;
   char *string;
   string = (char *) malloc(40);
   strcpy(string, "dynamically allocated string\n");
   puts(string);
+  free(string);
 
   while (1)
   {
-    x=malloc(sizeof(unsigned int));
-    y=malloc(sizeof(unsigned int));
-    *x = 1;
-    *y = 2;
+    x=(int) malloc(sizeof(int));
+    y=(int) malloc(sizeof(int));
+    *x = 427666;
+    *y = 123456;
     puts("x => ");puti(x);putch('\n');
     puts("y => ");puti(y);putch('\n');
     puts("*x=> ");puti(*x);putch('\n');

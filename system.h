@@ -23,7 +23,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#define VERSION "FunghOS v0.04.43 OpenSource" /* version name */
+#define VERSION "FunghOS v0.04.27 OpenSource" /* version name */
 
 /* global */
 #define OK 0
