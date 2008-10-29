@@ -25,27 +25,19 @@
 
 void *malloc(unsigned int size)
 {
-  /* 1/ find a free page
-     2/ find a free header
-     3/ mark it as used
-     4/ twidling with pointerz
-     5/ return its address
-   */
-
-  HEADER *header_curr = FIRST_HEADER;
-
-  while ((!header_curr->free) || ((header_curr->next - header_curr) < size))
-  {
-    palloc(header_curr->next, header_curr->next);
-    header_curr = header_curr->next;
-  }
-  header_curr->free=FALSE;
-  struct header *tmp = header_curr->next;
-  header_curr->next=header_curr+size; /* header_curr+size+1? */
-  HEADER *header_next;
-  header_next = header_curr->next;
-  header_next->next = tmp;
-  header_next->free = TRUE;
-  palloc(header_curr,header_curr->next);
-  return (header_curr+sizeof(HEADER));
+  struct header *h  = FIRST_HEADER;
+  struct header *i;
+  struct header *j;
+  
+  
+  while ((h->used) || ((h->next - (h + sizeof(struct header))) < size))
+    h = h->next;
+  
+  h->used = 1; //set the used bit
+  i = h->next; // store the old next ptr
+  h->next = (struct header *) h + sizeof(struct header) + size; // create the new one
+  j = (struct header *) h->next;
+  j->next = i; // write the ptr in the linked list
+  
+  return (h+sizeof(struct header));
 }

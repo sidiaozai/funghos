@@ -102,8 +102,8 @@ void i_paging() {
   
   malloc_test();
 
-  HEADER *header_curr = FIRST_HEADER;
-  header_curr->free = 1;
+  struct header *header_curr = FIRST_HEADER;
+  header_curr->used = 0;
   header_curr->next = END_OF_MEMORY;
 }
 

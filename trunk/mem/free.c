@@ -23,11 +23,9 @@
 
 
 
-void *free(void *addr)
+void free(void *addr)
 {
-  // TO BE WRITTEN LATER!
-  /*HEADER *header_curr;
-  header_curr = (HEADER *) (addr-sizeof(HEADER));
-  header_curr->free = TRUE;
-  return;*/
+  struct header *h = (struct header *) addr - sizeof(struct header);
+  h->used = 0;
+  return;
 }
