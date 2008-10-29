@@ -45,16 +45,29 @@ char getchar()
        }
      else
        {
-	 if (kbdus[scancode]!='\S') {
+	 if (kbdus[scancode]>31) {
 	   switch (kb_flags.shift) {
 	   case 0:c=kbdus[scancode];putch(c);break;
 	   case 1:c=kbdus2[scancode];putch(c);break;
 	   }
 	 } else {
-	   c='\S';
-	   kb_flags.shift=TRUE;
+	   if (kbdus[scancode]=='\S')
+	   {
+	     c='\S';
+	     kb_flags.shift=TRUE;
+	   }
+	   if (kbdus[scancode]=='\b')
+	   {
+	   	 c='\b';
+	   	 putch(c);
+	   }
+	   if (kbdus[scancode]=='\n')
+	   {
+	   	 c='\n';
+	   	 putch(c);
+	   }
 	 }
-	 if (c!='\S') {kb_flags.in_use=FALSE;return c;}
+	 if ((c>31) || (c=='\b') || (c=='\n')) {kb_flags.in_use=FALSE;return c;}
        }
     }
   }
