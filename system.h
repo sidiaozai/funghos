@@ -152,7 +152,7 @@ extern void drwin(struct win *window);
 
 extern int mkwin(int x, int y, int x2, int y2); /* vytvoreni okna */
 
-extern int rmwin(int winnum, int pid); /* smazani okna */
+extern int rmwin(struct win *window); /* smazani okna */
 /* win.c ** end*/
 
 

@@ -32,7 +32,7 @@ void scwin(struct win *window); /* scrolls a window */
 int rtwin(int type); /* system function, returns a lot of values */
 void drwin(struct win *window); /* draws a window, system */
 int mkwin(int x, int y, int x2, int y2); /* creates a new window */
-int rmwin(int winnum, int pid); /* removes a window */
+int rmwin(struct win *window); /* removes a window */
 
 
 
@@ -188,6 +188,29 @@ void drwin(struct win *window) {
 
 
 
-int rmwin(int winnum, int pid)
+int rmwin(struct win *window)
 {
+  struct win *tmp;
+  tmp = first_window;
+  if (tmp == window)
+  {
+  	first_window = tmp->next;
+  } else {
+    while (tmp->next != window)
+      tmp = tmp->next;
+    tmp->next = window->next;
+  }
+  if (currwin == window) // if the killed window was the current one, select another one
+    currwin = tmp;		 // the "alghortim" for selecting the new one is as you see
+  						 // pretty simple. random. LOL. This may be changed in future.
+  free(window);
+  cls();
+  tmp = first_window;
+  while (tmp)			 // redraw all the windows. This is subject to change in future
+  						 // to preserve what window was on top of what etc.
+  {
+    drwin(tmp);
+    tmp = tmp->next;
+  }
+  return 0; // return OK
 }

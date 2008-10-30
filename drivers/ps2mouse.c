@@ -150,7 +150,9 @@ void ps2m_handle(unsigned char flags, char x, char y)
   if (ps2my < 0) ps2my = 0;
   if (ps2mx > 79) ps2mx = 79;
   if (ps2mx < 0) ps2mx = 0;
-  if (last_txtptr)
+  
+  // bugfix for "overwriting" chars follows
+  if ((*last_txtptr == (MOUSE_CHAR | (((MOUSE_BACC << 4) | (MOUSE_FORC & 0x0F)) << 8))) && (last_txtptr))
     *last_txtptr = last_value;
   last_txtptr = txtptr = ((unsigned short *)0xB8000) + (ps2my * 80) + ps2mx;
   last_value = (unsigned short) *txtptr;
