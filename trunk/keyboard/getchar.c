@@ -45,7 +45,7 @@ char getchar()
        }
      else
        {
-	 if (kbdus[scancode]>31) {
+	 if ((kbdus[scancode]>31)&&(kbdus[scancode]!='\S')) {
 	   switch (kb_flags.shift) {
 	   case 0:c=kbdus[scancode];putch(c);break;
 	   case 1:c=kbdus2[scancode];putch(c);break;
@@ -67,7 +67,7 @@ char getchar()
 	   	 putch(c);
 	   }
 	 }
-	 if ((c>31) || (c=='\b') || (c=='\n')) {kb_flags.in_use=FALSE;return c;}
+	 if (((c>31) || (c=='\b') || (c=='\n')) && (c!='\S')) {kb_flags.in_use=FALSE;return c;}
        }
     }
   }

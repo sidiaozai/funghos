@@ -22,6 +22,9 @@
 #include <screen/win.h>
 
 
+#define CLS_BG BLACK
+#define CLS_FG BLACK
+
 
 unsigned short *textmemptr;
 int attrib = 0x0F;
@@ -65,6 +68,8 @@ void cls()
 {
     unsigned blank;
     int i;
+
+	txtclr(CLS_FG,CLS_BG);
 
     blank = 0x20 | (attrib << 8);
 
