@@ -34,6 +34,8 @@ typedef struct win {
 #define WINMAX 10 /* how many windows can be opened - linked list later */
 #define BD_FG_NORM YELLOW
 #define BD_BG_NORM BLUE
+#define CLOSE_FG YELLOW
+#define CLOSE_BG RED
 #define BD_FG_FOCUS YELLOW
 #define BD_BG_FOCUS RED
 #define WINFOREGROUND 0
@@ -55,5 +57,6 @@ typedef struct win {
 #define DOWNBORDER UPBORDER
 #define DOWNLEFTCORNER 200
 #define DOWNRIGHTCORNER 188
+#define CLOSEBTN 'x'
 
 #endif

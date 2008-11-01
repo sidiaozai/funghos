@@ -180,12 +180,18 @@ void swin()
   window = first_window;
   while (window)
   {
-  	if ((ps2mx < (window->x2 + 1)) && (ps2mx > (window->x - 1)) && (ps2my < (window->y2 + 1)) && (ps2my > (window->y - 1)))
+  	if ((ps2my == window->y) && (ps2mx == (window->x2-1)))
   	{
-  	  currwin = window;
-  	  drwin(window);
-  	  return;
-	}
+	  rmwin(window);
+	  return;
+	} else {
+  	  if ((ps2mx < (window->x2 + 1)) && (ps2mx > (window->x - 1)) && (ps2my < (window->y2 + 1)) && (ps2my > (window->y - 1)))
+  	  {
+  	    currwin = window;
+  	    drwin(window);
+  	    return;
+	  }
+    }
 	window = window->next;
   }
 }
