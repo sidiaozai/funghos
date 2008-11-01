@@ -146,9 +146,12 @@ void drwin(struct win *window) {
   csr_y = window->y;
   txtclr(BD_FG_NORM,BD_BG_NORM);
   putcha(UPLEFTCORNER);
-  while (csr_x<=((window->x2)-1)) {
+  while (csr_x<=((window->x2)-2)) {
     putcha(UPBORDER);
   } /* horni 'obruba' okna */
+  txtclr(CLOSE_FG,CLOSE_BG);
+  putcha(CLOSEBTN);
+  txtclr(BD_FG_NORM,BD_BG_NORM);
   putcha(UPRIGHTCORNER);
 
   csr_y=(window->y)+1;
