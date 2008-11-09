@@ -64,6 +64,7 @@ void help_dev()
   puts("esp? - dumps current esp and prints it out in decimal\n");
   puts("mdebug - allocate all the memory avaible by looping a malloc(int)\n");
   puts("mkwin_ -- create a window at another portion of the screen\n");
+  puts("multitask -- attempt to launch multitasking\n");
   puts("killcurrwin - kill the current window\n");
   puts("irqwaitk -- wait for an irq from the keyboard\n");
 }
@@ -151,6 +152,7 @@ void cmdexec(char *cmd_buf) {
   if (strcmp(cmd_buf,"irqwaitk")==0) {puts("waiting... ");irq_wait(1);puts("done\n");return;}
   if (strcmp(cmd_buf,"killcurrwin")==0) {rmwin(currwin);return;}
   if (strcmp(cmd_buf,"esp?")==0) {printesp();return;}
+  if (strcmp(cmd_buf,"multitask")==0) {i_multitasking();return;}
   puts("Command not found.\n");
 }
 
