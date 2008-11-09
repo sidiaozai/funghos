@@ -15,16 +15,15 @@
 /*     You should have received a copy of the GNU General Public License      */
 /*     along with FunghOS. If not, see <http://www.gnu.org/licenses/>.        */
 #include <system.h>
+#include <stdio.h>
 #include "multitasking.h"
-
-
-#define KSTACKEND 1081048
 
 
 process_t *task_curr; // global ptr to current task
 process_t *task_new; // used when switching process's
+process_t *null_proc; // null process
 process_t *lastproc;
-unsigned int kstackend = KSTACKEND; // not sure about this
+unsigned int kstackend;
 
 
 static q_t *ready_f = 0;
@@ -33,6 +32,8 @@ static q_t *ready_l = 0;
 
 void schedule();
 void q_ready_add(process_t *p);
+void i_multitasking();
+void idle();
 
 
 process_t *task_create(entry_t entry,int priority){
@@ -156,4 +157,33 @@ void ctxsw()
 	   );
   
   __asm__ ("sti"); // enable interrupts again
+}
+
+
+void i_multitasking()
+{
+  // not much to do here, just register a NULL process and register the new timer handler
+  null_proc = task_create(idle,0);
+  q_ready_add(null_proc);
+
+  txtclr(YELLOW,TXTBACKGROUND);
+  puts("Initializing idle\n");
+
+  __asm__ ("movl %%esp,%0;"
+	   :"=r" ((unsigned int) kstackend)
+	   );
+
+  txtclr(RED,TXTBACKGROUND);
+  puts("Setting kstackend : ");puti(kstackend);putch('\n');
+
+  txtclr(TXTFOREGROUND,TXTBACKGROUND);
+  irq_install_handler(0,timer_handler2);
+  puts("Installed timer_handler\n");
+}
+
+
+void idle()
+{
+  while (1)
+    putch('#');
 }

@@ -83,6 +83,13 @@ void strcpy(char *s1, char *s2)
 
 
 
+void login_start()
+{
+  login(0);
+}
+
+
+
 void _main(unsigned int magic, multiboot_info_t *mbd)
 {
   gdt_install();
@@ -99,7 +106,12 @@ void _main(unsigned int magic, multiboot_info_t *mbd)
 
   __asm__ __volatile__ ("sti");
   screen_no_scroll=TRUE;
-  login(0);
+  
+  q_ready_add(task_create(login_start,1));
+  login_start();
+
+  //i_multitasking();
+
   for (;;)
     ;
 }
