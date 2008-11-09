@@ -33,6 +33,8 @@
 #define FALSE 0
 #define NULL 0
 
+#define panic(str) { puts(str);while(42);}
+
 typedef unsigned int u32int;
 
 /* global ** end */

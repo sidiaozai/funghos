@@ -34,32 +34,34 @@ void pgfault_handler(struct regs *r)
 {
   static unsigned int debug=1;
 
+  int present   = !(r->err_code & 0x1); // Page not present
+  int write = r->err_code & 0x2;           // Write operation?
+  int user = r->err_code & 0x4;           // Processor was in user-mode?
+  int reserved = r->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
+  int id = r->err_code & 0x10;          // Caused by an instruction fetch?
+
   unsigned int faulting_addr;
   __asm__ __volatile__ ("mov %%cr2, %0" : "=r" (faulting_addr));
 
-  if (debug==0) {
-    malloc_test();
-  } else {
+  if (!debug) {
+    
+    // we must set the faulting address as allocated.
 
-    int present   = !(r->err_code & 0x1); // Page not present
-    int rw = r->err_code & 0x2;           // Write operation?
-    int us = r->err_code & 0x4;           // Processor was in user-mode?
-    int reserved = r->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
-    int id = r->err_code & 0x10;          // Caused by an instruction fetch?
+  } else {
     
     txtclr(RED,TXTBACKGROUND);
     puts("\nPage Fault!\n");
     txtclr(GREEN,TXTBACKGROUND);
     puts("( ");
-    if (present) puts("present ");
-    if (rw) puts("read-only ");
-    if (us) puts("user-mode ");
+    if (present) puts("present "); else puts("not present ");
+    if (write) puts("write "); else puts("read ");
+    if (user) puts("user-mode "); else puts("supervisor-mode ");
     if (reserved) puts("reserved ");
     
     puts(")\n");
     
     txtclr(YELLOW,TXTBACKGROUND);
-    putx(faulting_addr);
+    puti(faulting_addr);
     
     putch('\n');
     
